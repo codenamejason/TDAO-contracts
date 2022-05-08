@@ -1,3 +1,5 @@
+import React from "react";
+
 const PrivacyPolicy = () => {
     return (
         <div className="mt-8 text-center">

@@ -22,10 +22,10 @@ import {
   Home,
   PrivacyPolicy,
   Search,
+  Subgraph,
   Submit,
   TermsOfService,
   User,
-  Subgraph,
 } from "./views";
 
 const { ethers } = require("ethers");
