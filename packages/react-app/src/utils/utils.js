@@ -37,7 +37,7 @@ export function readTextFile(file) {
 }
 
 export async function getAuthorData(params) {
-  const server = "http://localhost:4000";
+  const server = "https://tdao-api.herokuapp.com";
   try {
     const res = await axios.get(server + "/api/authors", { params });
     if (res.data.success) {

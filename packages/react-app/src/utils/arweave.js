@@ -1,7 +1,7 @@
 import Arweave from "arweave";
-import { arJWK } from "./../RBDknevaThx7OS6TSULo00kYTADbA0gL12PamuBuLM4.js";
+import { arJWK } from "./../LBZe99qrl3_vOB4jwXqM-ps66cJE7fuksHJO3-B8gno.js";
 // Wallet for testing
-// RBDknevaThx7OS6TSULo00kYTADbA0gL12PamuBuLM4
+// LBZe99qrl3_vOB4jwXqM-ps66cJE7fuksHJO3-B8gno
 
 const arweave = Arweave.init({
   host: "arweave.net",

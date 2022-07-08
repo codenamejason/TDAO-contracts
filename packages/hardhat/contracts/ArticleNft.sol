@@ -9,12 +9,12 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "./AuthorEntity.sol";
+import "./entities/AuthorEntity.sol";
 
 /// @title Talent DAO NFT Contract
 /// @author Jaxcoder
 /// @dev ERC721 to represent articles submitted by authors as the IP and license
-contract TalentDaoNftToken is Ownable, ERC721URIStorage, AuthorEntity {
+contract ArticleNft is Ownable, ERC721URIStorage, AuthorEntity {
     using Counters for Counters.Counter;
     using SafeERC20 for IERC20;
 
@@ -31,7 +31,7 @@ contract TalentDaoNftToken is Ownable, ERC721URIStorage, AuthorEntity {
     }
 
     /// @dev for OpenSea
-    function contractURI() public view returns (string memory)
+    function contractURI() public pure returns (string memory)
     {
         return "";
     }

@@ -8,29 +8,15 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
-import "./AuthorEntity.sol";
-import "./ArticleEntity.sol";
+import "./entities/AuthorEntity.sol";
+import "./entities/ArticleEntity.sol";
+import "./interfaces/ITDAOToken.sol";
+import {IArticleNft} from "./interfaces/IArticleNft.sol";
+import "./interfaces/ITDAOMemberToken.sol";
 
-/// @dev TDAO token interface
-interface ITDAOToken {
-    function mintTokens(uint256 amount, address to) external;
-    function transfer ( address recipient, uint256 amount ) external returns ( bool );
-    function transferFrom ( address sender, address recipient, uint256 amount ) external returns ( bool );
-    function approve ( address spender, uint256 amount ) external returns ( bool );
-    function burnTokens(uint256 amount, address from) external;
-    function balanceOf ( address account ) external view returns ( uint256 );
-}
-
-interface ITDAONFTToken {
-    function mintNFTForArticle(address ownerAddress, string memory metadataPtr, uint256 amount) external returns(uint256);
-}
-
-interface ITDAOMemberToken{
-    function mintMembershipToken(address authorAddress, string memory metadataPtr, uint256 amount) external returns(uint256);
-}
 
 /// @title TokenRecover
-/// @author jaxcoder
+/// @author Jaxcoder
 /// @dev Allow to recover any ERC20 sent into the contract for error
 contract TokenRecover is Ownable {
     /**
@@ -50,14 +36,15 @@ contract TokenRecover is Ownable {
 contract TalentDaoManager is Ownable, AuthorEntity, AccessControl, TokenRecover {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
+
+    error FailedTransfer();
     
     bytes32 public constant MANAGER_ROLE = keccak256("MANAGER_ROLE");
 
     address public manager;
 
     ITDAOToken public tDaoToken;
-    address public tDaoTokenAddress;
-    ITDAONFTToken public tDaoNftToken;
+    IArticleNft public articleNft;
     ITDAOMemberToken public tDaoMemberToken;
 
     event ManagerRemoved(address indexed oldManager);
@@ -67,8 +54,7 @@ contract TalentDaoManager is Ownable, AuthorEntity, AccessControl, TokenRecover 
         manager = _manager;
         _setupRole(MANAGER_ROLE, _manager);
         tDaoToken = ITDAOToken(_TDAOToken);
-        tDaoTokenAddress = _TDAOToken;
-        tDaoNftToken = ITDAONFTToken(_TDAONFTToken);
+        articleNft = IArticleNft(_TDAONFTToken);
         tDaoMemberToken = ITDAOMemberToken(_TDAOMemberToken);
         transferOwnership(_owner);
     }
@@ -104,7 +90,7 @@ contract TalentDaoManager is Ownable, AuthorEntity, AccessControl, TokenRecover 
         public
         returns (uint256)
     {
-        (uint256 newItemId) = tDaoNftToken.mintNFTForArticle(owner, metadataPtr, amount);
+        (uint256 newItemId) = articleNft.mintNFTForArticle(owner, metadataPtr, amount);
 
         return (newItemId);
     }
@@ -112,12 +98,13 @@ contract TalentDaoManager is Ownable, AuthorEntity, AccessControl, TokenRecover 
 
     function tipAuthor(address author, uint256 amount) public {
         require(tDaoToken.balanceOf(msg.sender) >= amount, "You don't have enough TDAO tokens");
-        tDaoToken.transferFrom(msg.sender, author, amount);
+        (bool success) = tDaoToken.transferFrom(msg.sender, author, amount);
+        if(!success) revert FailedTransfer();
     }
 
     function tipAuthorEth(address author) public payable {
         (bool success, ) = msg.sender.call{ value: msg.value }("");
-        require(success, "ETH transfer failed");
+        if(!success) revert FailedTransfer();
     }
     
 }

@@ -28,7 +28,7 @@ export const ArticleCard = ({ id }) => {
   };
 
   const getAuthorData = async () => {
-    const server = "http://localhost:4000";
+    const server = "https://talentdao-api.herokuapp.com";
     const params = new URLSearchParams([["walletId", article.walletId]]);
     try {
       const res = await axios.get(server + "/api/authors", { params });

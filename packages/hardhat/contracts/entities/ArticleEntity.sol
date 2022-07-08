@@ -13,12 +13,14 @@ contract ArticleEntity {
         uint256 id;
         address author; // the address of the author
         string metadataPtr; // token uri to metadata
+        string arweaveHash; // the arweave hash
         uint256 tokenId; // the token id representing the authors article
         uint256 paid; // the amount paid for the article to be saved on the system
     }
 
     Article[] articleList;
 
+    /// @dev the string is the arweave hash
     mapping(string => Article) public articles;
 
     constructor() public {}

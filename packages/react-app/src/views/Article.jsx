@@ -16,7 +16,7 @@ import { SimilarArticleCard } from "../components/HelperComponents/SimilarArticl
 import { dataURLtoFile, getAuthorData, readTextFile } from "../utils/utils";
 pdfjs.GlobalWorkerOptions.workerSrc = "pdf.worker.min.js";
 
-const server = "http://localhost:4000";
+const server = "https://tdao-api.herokuapp.com/";
 const apiClient = new APIClient(
   "https://lib.openlaw.io/api/v1/default",
   // {

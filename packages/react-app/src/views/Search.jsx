@@ -44,7 +44,7 @@ const Search = () => {
   };
 
   const searchForQuery = async query => {
-    const server = "https://talentdao-api.herokuapp.com";
+    const server = "https://tdao-api.herokuapp.com/";
     const cate = category === "author" ? "/api/author_find" : "/api/article_find";
     const params = new URLSearchParams([
       ["field", field],

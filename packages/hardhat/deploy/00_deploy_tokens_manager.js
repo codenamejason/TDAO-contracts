@@ -23,6 +23,13 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     log: true,
   });
 
+  const veTalentDaoTokenContract = await deploy("veTalentDaoToken", {
+    from: deployer,
+    args: ["0x3f15B8c6F9939879Cb030D6dd935348E57109637"],
+    log: true,
+  });
+
+
   await deploy("TalentDaoNftToken", {
     from: deployer,
     args: [
@@ -84,6 +91,11 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
       await run("verify:verify", {
         address: TalentDAOTokenContract.address,
         contract: "contracts/TalentDaoToken.sol:TalentDaoToken",
+        constructorArguments: ["0x3f15B8c6F9939879Cb030D6dd935348E57109637"],
+      });
+      await run("verify:verify", {
+        address: veTalentDaoTokenContract.address,
+        contract: "contracts/veTalentDaoToken.sol:veTalentDaoToken",
         constructorArguments: ["0x3f15B8c6F9939879Cb030D6dd935348E57109637"],
       });
       await run("verify:verify", {
