@@ -2,14 +2,19 @@ import { KeyOutlined, QrcodeOutlined, SendOutlined, WalletOutlined } from "@ant-
 import { Button, Modal, Spin, Tooltip, Typography } from "antd";
 import { ethers } from "ethers";
 import QR from "qrcode.react";
-import React, { useState, useEffect } from "react";
+import React, { lazy, Suspense, useEffect, useState } from "react";
 import { Transactor } from "../helpers";
-import Address from "./Address";
-import AddressInput from "./AddressInput";
-import Balance from "./Balance";
-import EtherInput from "./EtherInput";
+// import Address from "./Address";
+// import AddressInput from "./AddressInput";
+// import Balance from "./Balance";
+// import EtherInput from "./EtherInput";
 
 const { Text, Paragraph } = Typography;
+
+const Address = lazy(() => import("./Address"));
+const AddressInput = lazy(() => import("./AddressInput"));
+const Balance = lazy(() => import("./Balance"));
+const EtherInput = lazy(() => import("./EtherInput"));
 
 /*
   ~ What it does? ~
@@ -136,7 +141,10 @@ export default function Wallet(props) {
       extraPkDisplay.push(
         <div style={{ fontSize: 16, padding: 2, backgroundStyle: "#89e789" }}>
           <a href={"/pk#" + pk}>
-            <Address minimized address={wallet.address} ensProvider={props.ensProvider} /> {wallet.address.substr(0, 6)}
+            <Suspense fallback={<div>Loading...</div>}>
+              <Address minimized address={wallet.address} ensProvider={props.ensProvider} />
+            </Suspense>{" "}
+            {wallet.address.substr(0, 6)}
           </a>
         </div>,
       );
@@ -150,7 +158,9 @@ export default function Wallet(props) {
             extraPkDisplay.push(
               <div style={{ fontSize: 16 }}>
                 <a href={"/pk#" + pastpk}>
-                  <Address minimized address={pastwallet.address} ensProvider={props.ensProvider} />{" "}
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <Address minimized address={pastwallet.address} ensProvider={props.ensProvider} />
+                  </Suspense>{" "}
                   {pastwallet.address.substr(0, 6)}
                 </a>
               </div>,
@@ -245,22 +255,26 @@ export default function Wallet(props) {
     display = (
       <div>
         <div style={inputStyle}>
-          <AddressInput
-            autoFocus
-            ensProvider={props.ensProvider}
-            placeholder="to address"
-            address={toAddress}
-            onChange={setToAddress}
-          />
+          <Suspense fallback={<div>Loading...</div>}>
+            <AddressInput
+              autoFocus
+              ensProvider={props.ensProvider}
+              placeholder="to address"
+              address={toAddress}
+              onChange={setToAddress}
+            />
+          </Suspense>
         </div>
         <div style={inputStyle}>
-          <EtherInput
-            price={props.price}
-            value={amount}
-            onChange={value => {
-              setAmount(value);
-            }}
-          />
+          <Suspense fallback={<div>Loading...</div>}>
+            <EtherInput
+              price={props.price}
+              value={amount}
+              onChange={value => {
+                setAmount(value);
+              }}
+            />
+          </Suspense>
         </div>
       </div>
     );
@@ -297,7 +311,9 @@ export default function Wallet(props) {
           <div>
             {selectedAddress ? <Address address={selectedAddress} ensProvider={props.ensProvider} /> : <Spin />}
             <div style={{ float: "right", paddingRight: 25 }}>
-              <Balance address={selectedAddress} provider={props.provider} dollarMultiplier={props.price} />
+              <Suspense fallback={<div>Loading...</div>}>
+                <Balance address={selectedAddress} provider={props.provider} dollarMultiplier={props.price} />
+              </Suspense>
             </div>
           </div>
         }

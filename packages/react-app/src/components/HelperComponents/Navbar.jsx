@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import discord from "../../assets/discord.png";
 import divideImage from "../../assets/divide.png";

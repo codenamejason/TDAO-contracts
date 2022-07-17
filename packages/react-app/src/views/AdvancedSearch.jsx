@@ -1,11 +1,16 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { lazy, Suspense, useEffect, useState } from "react";
 import clear from "../assets/clear.svg";
 import search from "../assets/search.svg";
-import { AuthorCard } from "../components/HelperComponents/AuthorCard";
-import Footer from "../components/HelperComponents/Footer";
-import { SubmissionCard } from "../components/HelperComponents/SubmissionCard";
+// import { AuthorCard } from "../components/HelperComponents/AuthorCard";
+// import Footer from "../components/HelperComponents/Footer";
+// import { SubmissionCard } from "../components/HelperComponents/SubmissionCard";
 import { strcmp } from "../utils/utils";
+
+// lazy load components
+const AuthorCard = lazy(() => import("../components/HelperComponents/AuthorCard"));
+const Footer = lazy(() => import("../components/HelperComponents/Footer"));
+const SubmissionCard = lazy(() => import("../components/HelperComponents/SubmissionCard"));
 
 const AdvancedSearch = () => {
   const [category, setCategory] = useState("author");
@@ -197,12 +202,22 @@ const AdvancedSearch = () => {
         </div>
         <div className="py-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {category === "author"
-            ? searchResult.map(item => <AuthorCard key={Math.random()} author={item}></AuthorCard>)
-            : searchResult.map(item => <SubmissionCard key={Math.random()} article={item}></SubmissionCard>)}
+            ? searchResult.map(item => (
+                <Suspense fallback={<div>Loading...</div>}>
+                  <AuthorCard key={Math.random()} author={item}></AuthorCard>
+                </Suspense>
+              ))
+            : searchResult.map(item => (
+                <Suspense fallback={<div>Loading...</div>}>
+                  <SubmissionCard key={Math.random()} article={item}></SubmissionCard>
+                </Suspense>
+              ))}
         </div>
       </div>
       <div className="px-4 sm:px-8 md:px-10 xl:px-20">
-        <Footer></Footer>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Footer></Footer>
+        </Suspense>
       </div>
     </div>
   );

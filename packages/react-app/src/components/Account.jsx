@@ -1,7 +1,10 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { useThemeSwitcher } from "react-css-theme-switcher";
-import Address from "./Address";
-import Balance from "./Balance";
+// import Address from "./Address";
+// import Balance from "./Balance";
+
+const Address = lazy(() => import("./Address"));
+const Balance = lazy(() => import("./Balance"));
 
 /*
   ~ What it does? ~
@@ -87,7 +90,11 @@ export default function Account({
     <div className="">
       {web3Modal && web3Modal.cachedProvider ? (
         <div className="">
-          {address && <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />}
+          {address && (
+            <Suspense fallback={<div>Loading...</div>}>
+              <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
+            </Suspense>
+          )}
           {/* <Balance address={address} provider={localProvider} price={price} />
           <Wallet
             address={address}
@@ -102,15 +109,23 @@ export default function Account({
         ""
       ) : isContract ? (
         <>
-          {address && <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />}
-          <Balance address={address} provider={localProvider} price={price} />
+          {address && (
+            <Suspense fallback={<div>Loading...</div>}>
+              <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
+            </Suspense>
+          )}
+          <Suspense fallback={<div>Loading...</div>}>
+            <Balance address={address} provider={localProvider} price={price} />
+          </Suspense>
         </>
       ) : (
         ""
       )}
       {useBurner && web3Modal && !web3Modal.cachedProvider ? (
         <>
-          <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
+          <Suspense fallback={<div>Loading...</div>}>
+            <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
+          </Suspense>
           {/* <Balance address={address} provider={localProvider} price={price} />
           <Wallet
             address={address}

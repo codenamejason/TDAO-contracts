@@ -1,10 +1,10 @@
 import { Select } from "antd";
-import { useLookupAddress } from "eth-hooks/dapps/ens";
-import React, { useCallback, useState } from "react";
-import QrReader from "react-qr-reader";
-import Blockie from "./Blockie";
+import React, { lazy, Suspense, useCallback, useState } from "react";
+// import Blockie from "./Blockie";
 import { ethers } from "ethers";
 import { useMemo } from "react";
+
+const Blockie = lazy(() => import("./Blockie"));
 
 // probably we need to change value={toAddress} to address={toAddress}
 
@@ -50,7 +50,9 @@ export default function MultiAddressInput(props) {
       <Select.Option key={i.address} value={i.address}>
         <div style={{ display: "flex", alignItems: "center" }}>
           <div style={{ marginRight: "3px" }}>
-            <Blockie address={i.address} size={5} scale={3} />
+            <Suspense fallback={<div>Loading...</div>}>
+              <Blockie address={i.address} size={5} scale={3} />
+            </Suspense>
           </div>
           {i.ens ? i.ens : i.address?.substr(0, 5) + "..." + i.address?.substr(-4)}
         </div>

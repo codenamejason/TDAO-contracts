@@ -2,16 +2,19 @@
 import { notification } from "antd";
 import axios from "axios";
 import { ethers } from "ethers";
-import React, { useEffect, useState } from "react";
+import React, { lazy, useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import mark from "../assets/best_mark.png";
 import check from "../assets/check.png";
 import linkedin from "../assets/linkedin.png";
 import twitter from "../assets/twitter.png";
-import ArticleMintCard from "../components/HelperComponents/ArticleMintCard";
-import AuthorMark from "../components/HelperComponents/AuthorMark";
-import Footer from "../components/HelperComponents/Footer";
+// import { ArticleMintCard, AuthorMark, Footer } from "../components/HelperComponents";
 import { dataURLtoFile, getAuthorData } from "../utils/utils";
+
+// lazy load
+const ArticleMintCard = lazy(() => import("../components/HelperComponents/ArticleMintCard"));
+const AuthorMark = lazy(() => import("../components/HelperComponents/AuthorMark"));
+const Footer = lazy(() => import("../components/HelperComponents/Footer"));
 
 const Author = ({ tx, readContracts, writeContracts, address }) => {
   const history = useHistory();
@@ -178,6 +181,7 @@ const Author = ({ tx, readContracts, writeContracts, address }) => {
   };
 
   const tipAuthorEth = async amount => {
+    console.log("amount", amount);
     await tx(
       writeContracts &&
         writeContracts.TalentDaoManager &&
@@ -258,7 +262,10 @@ const Author = ({ tx, readContracts, writeContracts, address }) => {
                                 type="text"
                                 value={tipAmount}
                                 className="my-1 px-4 py-2 bg-transparent rounded-xl block w-full focus:outline-none text-lg border border-lightgray"
-                                onChange={event => setTipAmount(event.target.value)}
+                                onChange={event => {
+                                  setTipAmount(event.target.value);
+                                  console.log("Tip Amount", tipAmount);
+                                }}
                               />
                             </div>
                             <div className="flex flex-row items-center">

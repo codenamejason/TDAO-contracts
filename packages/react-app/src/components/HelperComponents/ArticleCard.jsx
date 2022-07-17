@@ -14,37 +14,35 @@ export const ArticleCard = ({ id }) => {
   const [coverImage, setCoverImage] = useState(null);
   const [authorImage, setAuthorImage] = useState(null);
 
-  const getArticle = async () => {
-    const server = "https://talentdao-api.herokuapp.com";
-    try {
-      const params = new URLSearchParams([["_id", id]]);
-      const articleResponse = await axios.get(server + "/api/articles", { params });
-      if (articleResponse.data.success) {
-        setArticle(articleResponse.data.data[0]);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const getAuthorData = async () => {
-    const server = "https://talentdao-api.herokuapp.com";
-    const params = new URLSearchParams([["walletId", article.walletId]]);
-    try {
-      const res = await axios.get(server + "/api/authors", { params });
-      if (res?.data?.success) {
-        setAuthor(res?.data?.data[0]);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
   useEffect(() => {
+    const getArticle = async () => {
+      const server = "https://talentdao-api.herokuapp.com";
+      try {
+        const params = new URLSearchParams([["_id", id]]);
+        const articleResponse = await axios.get(server + "/api/articles", { params });
+        if (articleResponse.data.success) {
+          setArticle(articleResponse.data.data[0]);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
     getArticle();
   }, [id]);
 
   useEffect(() => {
+    const getAuthorData = async () => {
+      const server = "https://talentdao-api.herokuapp.com";
+      const params = new URLSearchParams([["walletId", article.walletId]]);
+      try {
+        const res = await axios.get(server + "/api/authors", { params });
+        if (res?.data?.success) {
+          setAuthor(res?.data?.data[0]);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
     if (!article) return;
     var cover = dataURLtoFile(article?.cover?.data, article?.cover?.filename);
     var coverSrc = URL.createObjectURL(cover);
@@ -89,9 +87,9 @@ export const ArticleCard = ({ id }) => {
           <div className="pt-8 flex flex-row justify-between items-center">
             <div className="flex flex-row items-center cursor-pointer" onClick={() => history.push("/author")}>
               {authorImage ? (
-                <img src={authorImage} width={30} height={30}></img>
+                <img alt="author" src={authorImage} width={30} height={30}></img>
               ) : (
-                <img src={authorimg} width={30} height={30}></img>
+                <img alt="author" src={authorimg} width={30} height={30}></img>
               )}
               <div className="pl-2 text-lg text-darkgray">{author?.username}</div>
             </div>
@@ -102,3 +100,5 @@ export const ArticleCard = ({ id }) => {
     </div>
   );
 };
+
+export default ArticleCard;

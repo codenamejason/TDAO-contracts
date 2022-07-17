@@ -1,7 +1,7 @@
 {
-  "short_name": "🏗 Scaffold-Eth App",
+  "short_name": "JoDW",
   "start_url": ".",
-  "name": "🏗 Scaffold-Eth App",
+  "name": "Journal of Decentralized Work",
   "icons": [
     {
       "src": "favicon.ico",
@@ -19,7 +19,6 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#ffffff"

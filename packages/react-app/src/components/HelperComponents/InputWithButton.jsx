@@ -1,7 +1,7 @@
 import { SearchCircleIcon } from "@heroicons/react/solid";
 import React from "react";
 
-const InputWithButton = ({}) => {
+const InputWithButton = () => {
   return (
     <div className="flex rounded-md shadow-sm">
       <div className="relative focus-within:z-10">

@@ -1,14 +1,19 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { lazy, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import arrow from "../assets/arrowWhite.svg";
 import clear from "../assets/clear.svg";
 import info from "../assets/info.svg";
 import search from "../assets/search.svg";
-import { AuthorCard } from "../components/HelperComponents/AuthorCard";
-import Footer from "../components/HelperComponents/Footer";
-import { SubmissionCard } from "../components/HelperComponents/SubmissionCard";
+// import { AuthorCard } from "../components/HelperComponents/AuthorCard";
+// import Footer from "../components/HelperComponents/Footer";
+// import { SubmissionCard } from "../components/HelperComponents/SubmissionCard";
 import { strcmp } from "../utils/utils";
+
+// lazy load components
+const AuthorCard = lazy(() => import("../components/HelperComponents/AuthorCard"));
+const Footer = lazy(() => import("../components/HelperComponents/Footer"));
+const SubmissionCard = lazy(() => import("../components/HelperComponents/SubmissionCard"));
 
 const Search = () => {
   const [category, setCategory] = useState("author");

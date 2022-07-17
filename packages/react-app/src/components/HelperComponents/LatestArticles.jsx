@@ -1,13 +1,18 @@
-import React, { Component } from "react";
+import React, { Component, lazy, Suspense } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 import favImage from "../../assets/favourite.png";
 import nextImage from "../../assets/next.png";
 import prevImage from "../../assets/prev.png";
-import { ArticleCard } from "./ArticleCard.jsx";
+// import { ArticleCard } from "./ArticleCard.jsx";
 
-export default class LatestArticles extends Component {
+// lazy load components
+const ArticleCard = lazy(() => import("./ArticleCard"));
+
+// OXcT1sVRSA5eGwt2k6Yuz8-3e3g9WJi5uSE99CWqsBs
+
+class LatestArticles extends Component {
   constructor(props) {
     super(props);
     this.goNext = this.goNext.bind(this);
@@ -69,7 +74,7 @@ export default class LatestArticles extends Component {
               className="rounded-md flex flex-row items-center py-1 px-2 mt-2 mr-4 cursor-pointer"
               style={{ background: "rgba(180, 28, 46, 0.06)" }}
             >
-              <img src={favImage} className="pr-1"></img>
+              <img alt="favorite" src={favImage} className="pr-1"></img>
               <div className="text-primary text-xs sm:text-base">Favourites</div>
             </div>
             <div
@@ -80,24 +85,28 @@ export default class LatestArticles extends Component {
             </div>
           </div>
           <div className="hidden md:flex justify-center space-x-2 sm:space-x-5 sm:mt-2">
-            <img className="w-12" src={prevImage} onClick={this.goPrevious}></img>
-            <img className="w-12" src={nextImage} onClick={this.goNext}></img>
+            <img alt="previous" className="w-12" src={prevImage} onClick={this.goPrevious}></img>
+            <img alt="next" className="w-12" src={nextImage} onClick={this.goNext}></img>
           </div>
         </div>
         <div className="relative roadmap_container">
           <Slider ref={c => (this.slider = c)} {...settings}>
             {this.props.articles.map((article_id, index) => (
-              <ArticleCard key={index} id={article_id}></ArticleCard>
+              <Suspense fallback={<div>Loading...</div>}>
+                <ArticleCard key={index} id={article_id}></ArticleCard>
+              </Suspense>
             ))}
           </Slider>
           <div className="md:hidden absolute top-1/2 left-4">
-            <img className="w-12" src={prevImage} onClick={this.goPrevious}></img>
+            <img alt="previous" className="w-12" src={prevImage} onClick={this.goPrevious}></img>
           </div>
           <div className="md:hidden absolute top-1/2 right-4">
-            <img className="w-12" src={nextImage} onClick={this.goNext}></img>
+            <img alt="next" className="w-12" src={nextImage} onClick={this.goNext}></img>
           </div>
         </div>
       </>
     );
   }
 }
+
+export default LatestArticles;

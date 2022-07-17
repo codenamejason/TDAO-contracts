@@ -40,3 +40,5 @@ export const AuthorCard = ({ author }) => {
     </div>
   );
 };
+
+export default AuthorCard;

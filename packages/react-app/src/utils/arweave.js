@@ -1,5 +1,5 @@
 import Arweave from "arweave";
-import { arJWK } from "./../LBZe99qrl3_vOB4jwXqM-ps66cJE7fuksHJO3-B8gno.js";
+import { arJWK } from "./wallet.js";
 // Wallet for testing
 // LBZe99qrl3_vOB4jwXqM-ps66cJE7fuksHJO3-B8gno
 

@@ -1,16 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, { lazy, useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import EditUserProfile from "../components/HelperComponents/EditUserProfile";
-import UserArticles from "../components/HelperComponents/UserArticles";
-import UserConnect from "../components/HelperComponents/UserConnect";
-import UserSubmissions from "../components/HelperComponents/UserSubmissions";
+// import {
+//   EditUserProfile,
+//   Notifications,
+//   UserArticles,
+//   UserConnect,
+//   UserSubmissions,
+// } from "../components/HelperComponents";
+
+// lazy load components
+const EditUserProfile = lazy(() => import("../components/HelperComponents/EditUserProfile"));
+const Notifications = lazy(() => import("../components/HelperComponents/Notifications"));
+const UserArticles = lazy(() => import("../components/HelperComponents/UserArticles"));
+const UserConnect = lazy(() => import("../components/HelperComponents/UserConnect"));
+const UserSubmissions = lazy(() => import("../components/HelperComponents/UserSubmissions"));
+const PublishedArticles = lazy(() => import("../components/HelperComponents/PublishedArticles"));
+const ReviewedPapers = lazy(() => import("../components/HelperComponents/ReviewedPapers"));
 
 const configUserType = {
   none: -1,
   submission: 0,
   article: 1,
+  notifications: 4,
   edit_profile: 2,
   logout: 3,
+  published: 5,
+  reviewed_papers: 6,
 };
 
 export default function User({ address, userMenuOpen, handleUserMenuOpen }) {
@@ -31,7 +46,14 @@ export default function User({ address, userMenuOpen, handleUserMenuOpen }) {
       history.push("/user/articles");
     } else if (type == configUserType.edit_profile) {
       history.push("/user/author");
+    } else if (type == configUserType.notifications) {
+      history.push("/user/notifications");
+    } else if (type == configUserType.published) {
+      history.push("/user/published");
+    } else if (type == configUserType.reviewed_papers) {
+      history.push("/user/reviewed_papers");
     }
+
     handleMenuOpen();
   };
 
@@ -42,6 +64,9 @@ export default function User({ address, userMenuOpen, handleUserMenuOpen }) {
       if (location.pathname.includes("/submissions")) setUserConfig(configUserType.submission);
       else if (location.pathname.includes("/articles")) setUserConfig(configUserType.article);
       else if (location.pathname.includes("/author")) setUserConfig(configUserType.edit_profile);
+      else if (location.pathname.includes("/notifications")) setUserConfig(configUserType.notifications);
+      else if (location.pathname.includes("/published")) setUserConfig(configUserType.published);
+      else if (location.pathname.includes("/reviewed_papers")) setUserConfig(configUserType.reviewed_papers);
       else setUserConfig(configUserType.submission);
     }
   }, [address]);
@@ -51,7 +76,9 @@ export default function User({ address, userMenuOpen, handleUserMenuOpen }) {
     else if (location.pathname.includes("/articles")) setUserConfig(configUserType.article);
     else if (location.pathname.includes("/author")) {
       setUserConfig(configUserType.edit_profile);
-    }
+    } else if (location.pathname.includes("/notifications")) setUserConfig(configUserType.notifications);
+    else if (location.pathname.includes("/published")) setUserConfig(configUserType.published);
+    else if (location.pathname.includes("/reviewed_papers")) setUserConfig(configUserType.reviewed_papers);
   }, [location.pathname, address]);
 
   const Menu = () => (
@@ -86,6 +113,30 @@ export default function User({ address, userMenuOpen, handleUserMenuOpen }) {
       </div>
       <div
         className="rounded-md bg-transparent hover:bg-gray px-8 py-2 flex flex-row items-center cursor-pointer text-lg"
+        onClick={() => handleConfigTypeChanged(configUserType.published)}
+      >
+        <svg width="35" height="35" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg" className="pr-3">
+          <path
+            d="M3.5 7H0V31.5C0 33.425 1.575 35 3.5 35H28V31.5H3.5V7ZM31.5 0H10.5C8.575 0 7 1.575 7 3.5V24.5C7 26.425 8.575 28 10.5 28H31.5C33.425 28 35 26.425 35 24.5V3.5C35 1.575 33.425 0 31.5 0ZM29.75 15.75H12.25V12.25H29.75V15.75ZM22.75 22.75H12.25V19.25H22.75V22.75ZM29.75 8.75H12.25V5.25H29.75V8.75Z"
+            fill={userConfig === configUserType.published ? "#B41C2E" : "#929292"}
+          />
+        </svg>
+        <div className={userConfig === configUserType.published ? "text-primary" : "text-lightgray"}>Published</div>
+      </div>
+      <div
+        className="rounded-md bg-transparent hover:bg-gray px-8 py-2 flex flex-row items-center cursor-pointer text-lg"
+        onClick={() => handleConfigTypeChanged(configUserType.reviewed_papers)}
+      >
+        <svg width="35" height="35" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg" className="pr-3">
+          <path
+            d="M3.5 7H0V31.5C0 33.425 1.575 35 3.5 35H28V31.5H3.5V7ZM31.5 0H10.5C8.575 0 7 1.575 7 3.5V24.5C7 26.425 8.575 28 10.5 28H31.5C33.425 28 35 26.425 35 24.5V3.5C35 1.575 33.425 0 31.5 0ZM29.75 15.75H12.25V12.25H29.75V15.75ZM22.75 22.75H12.25V19.25H22.75V22.75ZM29.75 8.75H12.25V5.25H29.75V8.75Z"
+            fill={userConfig === configUserType.reviewed_papers ? "#B41C2E" : "#929292"}
+          />
+        </svg>
+        <div className={userConfig === configUserType.reviewed_papers ? "text-primary" : "text-lightgray"}>Reviewed Papers</div>
+      </div>
+      <div
+        className="rounded-md bg-transparent hover:bg-gray px-8 py-2 flex flex-row items-center cursor-pointer text-lg"
         onClick={() => handleConfigTypeChanged(configUserType.article)}
       >
         <svg width="35" height="35" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg" className="pr-3">
@@ -94,7 +145,21 @@ export default function User({ address, userMenuOpen, handleUserMenuOpen }) {
             fill={userConfig === configUserType.article ? "#B41C2E" : "#929292"}
           />
         </svg>
-        <div className={userConfig === configUserType.article ? "text-primary" : "text-lightgray"}>Articles</div>
+        <div className={userConfig === configUserType.article ? "text-primary" : "text-lightgray"}>Papers</div>
+      </div>
+      <div
+        className="rounded-md bg-transparent hover:bg-gray px-8 py-2 flex flex-row items-center cursor-pointer text-lg"
+        onClick={() => handleConfigTypeChanged(configUserType.notifications)}
+      >
+        <svg width="35" height="35" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg" className="pr-3">
+          <path
+            d="M3.5 7H0V31.5C0 33.425 1.575 35 3.5 35H28V31.5H3.5V7ZM31.5 0H10.5C8.575 0 7 1.575 7 3.5V24.5C7 26.425 8.575 28 10.5 28H31.5C33.425 28 35 26.425 35 24.5V3.5C35 1.575 33.425 0 31.5 0ZM29.75 15.75H12.25V12.25H29.75V15.75ZM22.75 22.75H12.25V19.25H22.75V22.75ZM29.75 8.75H12.25V5.25H29.75V8.75Z"
+            fill={userConfig === configUserType.notifications ? "#B41C2E" : "#929292"}
+          />
+        </svg>
+        <div className={userConfig === configUserType.notifications ? "text-primary" : "text-lightgray"}>
+          Notifications
+        </div>
       </div>
       <div
         className="rounded-md bg-transparent hover:bg-gray px-8 py-2 flex flex-row items-center cursor-pointer text-lg"
@@ -106,9 +171,7 @@ export default function User({ address, userMenuOpen, handleUserMenuOpen }) {
             fill={userConfig === configUserType.edit_profile ? "#B41C2E" : "#929292"}
           />
         </svg>
-        <div className={userConfig === configUserType.edit_profile ? "text-primary" : "text-lightgray"}>
-          Edit Profile
-        </div>
+        <div className={userConfig === configUserType.edit_profile ? "text-primary" : "text-lightgray"}>Profile</div>
       </div>
       <div
         className="rounded-md bg-transparent hover:bg-gray px-8 py-2 flex flex-row items-center cursor-pointer text-lg"
@@ -149,8 +212,15 @@ export default function User({ address, userMenuOpen, handleUserMenuOpen }) {
               </div>
             ) : userConfig === configUserType.submission ? (
               <div className="flex flex-col">
-                <p className="py-4 text-left text-lg text-darkgray font-bold">Submissions</p>
                 <UserSubmissions address={address}></UserSubmissions>
+              </div>
+            ) : userConfig === configUserType.published ? (
+              <div className="flex flex-col">
+                <PublishedArticles address={address}></PublishedArticles>
+              </div>
+            ) : userConfig === configUserType.reviewed_papers ? (
+              <div className="flex flex-col">
+                <ReviewedPapers address={address}></ReviewedPapers>
               </div>
             ) : userConfig === configUserType.article ? (
               <div className="flex flex-col">
@@ -161,6 +231,11 @@ export default function User({ address, userMenuOpen, handleUserMenuOpen }) {
               <div className="flex flex-col">
                 <p className="py-4 text-left text-lg text-darkgray font-bold">Edit Profile</p>
                 <EditUserProfile address={address}></EditUserProfile>
+              </div>
+            ) : userConfig === configUserType.notifications ? (
+              <div className="flex flex-col">
+                <p className="py-4 text-left text-lg text-darkgray font-bold">Notifications</p>
+                <Notifications />
               </div>
             ) : (
               <></>

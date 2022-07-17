@@ -1,17 +1,24 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { lazy, Suspense, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import arrowRightImage from "../assets/ArrowRight.png";
 import authorImage from "../assets/author.png";
 import lineImage from "../assets/line.png";
 import partnershipImage from "../assets/partnership.png";
 import profileImage from "../assets/profile.png";
-import Footer from "../components/HelperComponents/Footer";
-import LatestArticles from "../components/HelperComponents/LatestArticles";
-// import Navbar from "../components/HelperComponents/Navbar";
-import Newsletter from "../components/HelperComponents/Newsletter";
-import Splash from "../components/HelperComponents/Splash";
+// import Footer from "../components/HelperComponents/Footer";
+// import LatestArticles from "../components/HelperComponents/LatestArticles";
+// import Newsletter from "../components/HelperComponents/Newsletter";
+// import Splash from "../components/HelperComponents/Splash";
 import { dataURLtoFile, getBgColorForCategory, getTextColorForCategory } from "../utils/utils";
+
+// lazy load components
+const Footer = lazy(() => import("../components/HelperComponents/Footer"));
+const LatestArticles = lazy(() => import("../components/HelperComponents/LatestArticles"));
+const Newsletter = lazy(() => import("../components/HelperComponents/Newsletter"));
+const Splash = lazy(() => import("../components/HelperComponents/Splash"));
+
+const server = "http://localhost:4001"; //https://tdao-api.herokuapp.com
 
 /**
  * web3 props can be passed from '../App.jsx' into your local view component for use
@@ -23,12 +30,10 @@ function Home({ yourLocalBalance, readContracts, address }) {
   const [articles, setArticles] = useState(null);
   // you can also use hooks locally in your component of choice
   const getLatestArticle = async () => {
-    const server = "https://tdao-api.herokuapp.com";
-
     // const params = new URLSearchParams([["_id", '623a1674c84da1d9301ae19f']]);
     try {
       console.log("Click event=============>");
-      const articleResponse = await axios.get(server + "/api/articles_latest", {});
+      const articleResponse = await axios.get(`${server}/api/articles_latest`, {});
       if (articleResponse.data.success) {
         setArticles(articleResponse.data.data);
       }
@@ -53,12 +58,12 @@ function Home({ yourLocalBalance, readContracts, address }) {
 
   useEffect(() => {
     const init = async () => {
-      const server = "https://tdao-api.herokuapp.com/api/authors";
       try {
-        const res = await axios.get(server);
+        const res = await axios.get(`${server}/api/authors`);
         if (res.data.success) {
           // randomly choose author just for test
           const length = res.data.data.length;
+          // index set for a random author
           const index = Math.floor(Math.random() * length);
           const featuredAuthor = res.data.data[index];
 
@@ -80,12 +85,14 @@ function Home({ yourLocalBalance, readContracts, address }) {
       }
     };
     init();
-  }, []);
+  }, [address]);
 
   return (
     <div style={{ backgroundImage: "linear-gradient(#fff, #EEEE" }}>
       <div className="mx-auto pt-4 max-w-xl md:max-w-4xl xl:max-w-7xl overflow-hidden">
-        <Splash address={address} />
+        <Suspense fallback={<div>Loading...</div>}>
+          <Splash address={address} />
+        </Suspense>
         <div className="mx-4 flex flex-row items-center pt-6">
           <img src={profileImage} alt="profile" className="pr-2"></img>
           <div className="text-black font-semibold text-2xl">
@@ -93,8 +100,12 @@ function Home({ yourLocalBalance, readContracts, address }) {
           </div>
         </div>
 
-        {/* Article Component Section */}
-        {articles && <LatestArticles articles={articles} />}
+        {/* Latest Articles Component Section */}
+        {articles && (
+          <Suspense fallback={<div>Loading</div>}>
+            <LatestArticles articles={articles} />
+          </Suspense>
+        )}
 
         {/* Featured Author & Updates Section  */}
         <div className="pt-16 grid grid-cols-1 xl:grid-cols-2">
@@ -110,7 +121,7 @@ function Home({ yourLocalBalance, readContracts, address }) {
               >
                 <img
                   src={authorImageSrc}
-                  alt="No image"
+                  alt="none"
                   className="rounded-xl w-full h-full cursor-pointer"
                   onClick={() => history.push(`/author/${authorWalletId}`)}
                 ></img>
@@ -220,11 +231,15 @@ function Home({ yourLocalBalance, readContracts, address }) {
         </div>
         {/* Newsletter Signup Component */}
         <div className="mt-10">
-          <Newsletter />
+          <Suspense fallback={<div>Loading...</div>}>
+            <Newsletter />
+          </Suspense>
         </div>
 
         {/* Footer Component Section */}
-        <Footer />
+        <Suspense fallback={<div>Loading...</div>}>
+          <Footer />
+        </Suspense>
       </div>
     </div>
   );

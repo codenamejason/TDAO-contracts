@@ -3,6 +3,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { dataURLtoFile, toBase64 } from "../../utils/utils";
 
+const server = "http://localhost:4001";
+
 const EditUserProfile = ({ address }) => {
   const [name, setName] = useState("Edit Name");
   const [bio, setBio] = useState("Edit Bio");
@@ -42,24 +44,23 @@ const EditUserProfile = ({ address }) => {
     setSelectedCoverImage(event.target.files[0]);
   };
 
-  const getAuthorData = async () => {
-    const server = "http://localhost:4000";
-    const params = new URLSearchParams([["walletId", address]]);
-    try {
-      const res = await axios.get(server + "/api/authors", { params });
-      if (res?.data?.success) {
-        setAuthor(res?.data?.data[0]);
-        setExistAuthor(true);
-      } else {
-        setExistAuthor(false);
-        setTipAddress(address);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
   useEffect(() => {
+    const getAuthorData = async () => {
+      const params = new URLSearchParams([["walletId", address]]);
+      try {
+        const res = await axios.get(server + "/api/authors", { params });
+        if (res?.data?.success) {
+          setAuthor(res?.data?.data[0]);
+          setExistAuthor(true);
+        } else {
+          setExistAuthor(false);
+          setTipAddress(address);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
     if (address === "" || address === undefined) return;
     getAuthorData();
   }, [address]);
@@ -144,8 +145,6 @@ const EditUserProfile = ({ address }) => {
     if (optionComedy) popularCategories.push("Comedy");
     if (optionPolitics) popularCategories.push("Politics");
 
-    const serverURL = "http://localhost:4000";
-
     const authorImage = selectedAuthorImage
       ? {
           filename: selectedAuthorImage.name,
@@ -183,10 +182,10 @@ const EditUserProfile = ({ address }) => {
       };
       console.log("TIGER data", data);
       if (existAuthor) {
-        const res = await axios.put(serverURL + "/api/author", data);
+        const res = await axios.put(server + "/api/author", data);
         console.log("res exist", res);
       } else {
-        const res = await axios.post(serverURL + "/api/author", data);
+        const res = await axios.post(server + "/api/author", data);
         if (res?.data?.success) setExistAuthor(true);
         console.log("res not", res);
       }

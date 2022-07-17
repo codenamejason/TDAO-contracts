@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import aboutImage from "../assets/about.png";
 import abstract from "../assets/abstract.png";
 import BlueTechBanner from "../assets/BlueTechBanner.png";
@@ -6,7 +6,10 @@ import know from "../assets/know.png";
 import lineImage from "../assets/line.png";
 import people_at from "../assets/people_at.png";
 import tradition from "../assets/tradition.png";
-import Footer from "../components/HelperComponents/Footer";
+// import Footer from "../components/HelperComponents/Footer";
+
+// lazy load components
+const Footer = lazy(() => import("../components/HelperComponents/Footer"));
 
 const About = () => {
   const scrollTop = () => {
@@ -99,7 +102,9 @@ const About = () => {
           </div>
         </div>
         <div className="md:mx-0">
-          <Footer></Footer>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Footer></Footer>
+          </Suspense>
         </div>
       </div>
     </div>

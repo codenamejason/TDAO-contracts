@@ -35,7 +35,7 @@ contract TokenRecover is Ownable {
 /// @notice Swaps Talent for veTalent and earn rewards on your Talent deposit
 /// @dev There is a 1:1 ratio on swaps
 // ReentrancyGuard, 
-contract talentStakePool is AccessControl, TokenRecover {
+contract TalentStaking is AccessControl, TokenRecover {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 

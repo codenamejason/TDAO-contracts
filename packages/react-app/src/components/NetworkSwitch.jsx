@@ -1,5 +1,5 @@
-import React from "react";
 import { Button, Dropdown, Menu } from "antd";
+import React from "react";
 
 function NetworkSwitch({ networkOptions, selectedNetwork, setSelectedNetwork }) {
   const menu = (

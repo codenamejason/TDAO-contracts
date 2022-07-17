@@ -2,33 +2,41 @@ import { Col, Row } from "antd";
 import "antd/dist/antd.css";
 import { useBalance, useContractLoader, useGasPrice, useOnBlock, useUserProviderAndSigner } from "eth-hooks";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import { Route, Switch, useLocation } from "react-router-dom";
 import "./App.css";
-import { Contract, Faucet, NetworkDisplay } from "./components";
 import Navbar from "./components/HelperComponents/Navbar";
 import { ALCHEMY_KEY, NETWORKS } from "./constants";
 import externalContracts from "./contracts/external_contracts";
 // contracts
+import ErrorBoundary from "./components/ErrorBoundary";
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
 import { useStaticJsonRPC } from "./hooks";
-import {
-  About,
-  AdvancedSearch,
-  Article,
-  Author,
-  Contact,
-  Home,
-  PrivacyPolicy,
-  Search,
-  Subgraph,
-  Submit,
-  TermsOfService,
-  User,
-} from "./views";
+
+// todo: lazy load components
+const NetworkDisplay = lazy(() => import("./components/NetworkDisplay"));
+const Contract = lazy(() => import("./components/Contract"));
+const Faucet = lazy(() => import("./components/Faucet"));
+
+// todo: lazy load views
+const AboutView = lazy(() => import("./views/About"));
+const AdvancedSearchView = lazy(() => import("./views/AdvancedSearch"));
+const ArticleView = lazy(() => import("./views/Article"));
+const AuthorView = lazy(() => import("./views/Author"));
+const ContactView = lazy(() => import("./views/Contact"));
+const HomeView = lazy(() => import("./views/Home"));
+const PrivacyPolicyView = lazy(() => import("./views/PrivacyPolicy"));
+const SearchView = lazy(() => import("./views/Search"));
+const SubgraphView = lazy(() => import("./views/Subgraph"));
+const SubmitView = lazy(() => import("./views/Submit"));
+const TermsOfServiceView = lazy(() => import("./views/TermsOfService"));
+const UserView = lazy(() => import("./views/User"));
+const TokenView = lazy(() => import("./views/Token"));
+const Governance = lazy(() => import("./views/Governance"));
 
 const { ethers } = require("ethers");
+
 /// 📡 What chain are your contracts deployed to?
 const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
@@ -41,11 +49,7 @@ const USE_NETWORK_SELECTOR = false;
 const web3Modal = Web3ModalSetup();
 
 // 🛰 providers
-const providers = [
-  "https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406",
-  `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`,
-  "https://rpc.scaffoldeth.io:48544",
-];
+const providers = [`https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`, "https://rpc.scaffoldeth.io:48544"];
 
 function App(props) {
   // specify all the chains your app is available on. Eg: ['localhost', 'mainnet', ...otherNetworks ]
@@ -63,14 +67,13 @@ function App(props) {
   const blockExplorer = targetNetwork.blockExplorer;
 
   // load all your providers
-
   const localProvider = useStaticJsonRPC([targetNetwork.rpcUrl]);
   const mainnetProvider = useStaticJsonRPC(providers);
 
   if (DEBUG) console.log(`Using ${selectedNetwork} network`);
 
   // 🛰 providers
-  if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
+  // if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
 
   const logoutOfWeb3Modal = async () => {
     await web3Modal.clearCachedProvider();
@@ -87,6 +90,7 @@ function App(props) {
 
   /* 🔥 This hook will get the price of Gas from ⛽️ EtherGasStation */
   const gasPrice = useGasPrice(targetNetwork, "fast");
+
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
   const userProviderAndSigner = useUserProviderAndSigner(injectedProvider, localProvider, USE_BURNER_WALLET);
   const userSigner = userProviderAndSigner.signer;
@@ -137,56 +141,41 @@ function App(props) {
     console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
   });
 
-  // Then read your DAI balance like:
-  // const myMainnetDAIBalance = useContractReader(mainnetContracts, "DAI", "balanceOf", [
-  //   "0x34aA3F359A9D614239015126635CE7732c18fDF3",
-  // ]);
-
-  // keep track of a variable from the contract in the local React state:
-  // const purpose = useContractReader(readContracts, "YourContract", "purpose");
-
-  /*
-  const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
-  console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
-  */
-
-  //
   // 🧫 DEBUG 👨🏻‍🔬
-  //
-  useEffect(() => {
-    if (
-      DEBUG &&
-      mainnetProvider &&
-      address &&
-      selectedChainId &&
-      yourLocalBalance &&
-      yourMainnetBalance &&
-      readContracts &&
-      writeContracts &&
-      mainnetContracts
-    ) {
-      console.log("_____________________________________ 🏗 scaffold-eth _____________________________________");
-      console.log("🌎 mainnetProvider", mainnetProvider);
-      console.log("🏠 localChainId", localChainId);
-      console.log("👩‍💼 selected address:", address);
-      console.log("🕵🏻‍♂️ selectedChainId:", selectedChainId);
-      console.log("💵 yourLocalBalance", yourLocalBalance ? ethers.utils.formatEther(yourLocalBalance) : "...");
-      console.log("💵 yourMainnetBalance", yourMainnetBalance ? ethers.utils.formatEther(yourMainnetBalance) : "...");
-      console.log("📝 readContracts", readContracts);
-      console.log("🌍 DAI contract on mainnet:", mainnetContracts);
-      console.log("🔐 writeContracts", writeContracts);
-    }
-  }, [
-    mainnetProvider,
-    address,
-    selectedChainId,
-    yourLocalBalance,
-    yourMainnetBalance,
-    readContracts,
-    writeContracts,
-    mainnetContracts,
-    localChainId,
-  ]);
+  // useEffect(() => {
+  //   if (
+  //     DEBUG &&
+  //     mainnetProvider &&
+  //     address &&
+  //     selectedChainId &&
+  //     yourLocalBalance &&
+  //     yourMainnetBalance &&
+  //     readContracts &&
+  //     writeContracts &&
+  //     mainnetContracts
+  //   ) {
+  //     console.log("_____________________________________ 🏗 scaffold-eth _____________________________________");
+  //     console.log("🌎 mainnetProvider", mainnetProvider);
+  //     console.log("🏠 localChainId", localChainId);
+  //     console.log("👩‍💼 selected address:", address);
+  //     console.log("🕵🏻‍♂️ selectedChainId:", selectedChainId);
+  //     console.log("💵 yourLocalBalance", yourLocalBalance ? ethers.utils.formatEther(yourLocalBalance) : "...");
+  //     console.log("💵 yourMainnetBalance", yourMainnetBalance ? ethers.utils.formatEther(yourMainnetBalance) : "...");
+  //     console.log("📝 readContracts", readContracts);
+  //     console.log("🌍 DAI contract on mainnet:", mainnetContracts);
+  //     console.log("🔐 writeContracts", writeContracts);
+  //   }
+  // }, [
+  //   mainnetProvider,
+  //   address,
+  //   selectedChainId,
+  //   yourLocalBalance,
+  //   yourMainnetBalance,
+  //   readContracts,
+  //   writeContracts,
+  //   mainnetContracts,
+  //   localChainId,
+  // ]);
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
@@ -226,173 +215,169 @@ function App(props) {
 
   return (
     <div className="App container-2xl mx-auto">
-      <NetworkDisplay
-        NETWORKCHECK={NETWORKCHECK}
-        localChainId={localChainId}
-        selectedChainId={selectedChainId}
-        targetNetwork={targetNetwork}
-        logoutOfWeb3Modal={logoutOfWeb3Modal}
-        USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
-      />
-      <Navbar
-        useBurner={false}
-        address={address}
-        localProvider={localProvider}
-        userSigner={userSigner}
-        mainnetProvider={mainnetProvider}
-        price={price}
-        web3Modal={web3Modal}
-        loadWeb3Modal={loadWeb3Modal}
-        logoutOfWeb3Modal={logoutOfWeb3Modal}
-        blockExplorer={blockExplorer}
-        userMenuOpen={userMenuOpen}
-        handleUserMenuOpen={handleUserMenuOpen}
-      />
+      <Suspense fallback={<div>Loading...</div>}>
+        <NetworkDisplay
+          NETWORKCHECK={NETWORKCHECK}
+          localChainId={localChainId}
+          selectedChainId={selectedChainId}
+          targetNetwork={targetNetwork}
+          logoutOfWeb3Modal={logoutOfWeb3Modal}
+          USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
+        />
+      </Suspense>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Navbar
+          useBurner={false}
+          address={address}
+          localProvider={localProvider}
+          userSigner={userSigner}
+          mainnetProvider={mainnetProvider}
+          price={price}
+          web3Modal={web3Modal}
+          loadWeb3Modal={loadWeb3Modal}
+          logoutOfWeb3Modal={logoutOfWeb3Modal}
+          blockExplorer={blockExplorer}
+          userMenuOpen={userMenuOpen}
+          handleUserMenuOpen={handleUserMenuOpen}
+        />
+      </Suspense>
       <Switch>
         <Route exact path="/">
-          {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
-          <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} address={address} />
+          <ErrorBoundary>
+            <Suspense fallback={<div>Loading...</div>}>
+              <HomeView yourLocalBalance={yourLocalBalance} readContracts={readContracts} address={address} />
+            </Suspense>
+          </ErrorBoundary>
         </Route>
         <Route exact path="/browse"></Route>
         <Route exact path="/about">
-          <About></About>
+          <Suspense fallback={<div>Loading...</div>}>
+            <AboutView />
+          </Suspense>
         </Route>
         <Route exact path="/contact">
-          <Contact></Contact>
+          <Suspense fallback={<div>Loading...</div>}>
+            <ContactView />
+          </Suspense>
         </Route>
         <Route exact path="/author/:walletId">
-          <Author tx={tx} readContracts={readContracts} writeContracts={writeContracts} address={address}></Author>
+          <Suspense fallback={<div>Loading...</div>}>
+            <AuthorView tx={tx} readContracts={readContracts} writeContracts={writeContracts} address={address} />
+          </Suspense>
         </Route>
         <Route exact path="/article/:id">
-          <Article readContracts={readContracts} writeContracts={writeContracts} address={address} tx={tx}></Article>
+          <Suspense fallback={<div>Loading...</div>}>
+            <ArticleView readContracts={readContracts} writeContracts={writeContracts} address={address} tx={tx} />
+          </Suspense>
         </Route>
         <Route exact path="/search">
-          <Search address={address} tx={tx} writeContracts={writeContracts} readContracts={readContracts}></Search>
+          <Suspense fallback={<div>Loading...</div>}>
+            <SearchView address={address} tx={tx} writeContracts={writeContracts} readContracts={readContracts} />
+          </Suspense>
         </Route>
         <Route exact path="/advancedsearch">
-          <AdvancedSearch
-            address={address}
-            tx={tx}
-            writeContracts={writeContracts}
-            readContracts={readContracts}
-          ></AdvancedSearch>
+          <Suspense fallback={<div>Loading...</div>}>
+            <AdvancedSearchView
+              address={address}
+              tx={tx}
+              writeContracts={writeContracts}
+              readContracts={readContracts}
+            />
+          </Suspense>
         </Route>
-        <Route exact path={["/user", "/user/submissions", "/user/author", "/user/articles"]}>
-          <User address={address} userMenuOpen={userMenuOpen} handleUserMenuOpen={handleUserMenuOpen}></User>
+        <Route exact path={["/user", "/user/submissions", "/user/author", "/user/articles", "/user/notifications", "/user/published", "/user/reviewed_papers"]}>
+          <Suspense fallback={<div>Loading...</div>}>
+            <UserView address={address} userMenuOpen={userMenuOpen} handleUserMenuOpen={handleUserMenuOpen} />
+          </Suspense>
         </Route>
         <Route exact path="/debug">
-          <Contract
-            name="TalentDaoToken"
-            price={price}
-            signer={userSigner}
-            provider={localProvider}
-            address={address}
-            blockExplorer={blockExplorer}
-            contractConfig={contractConfig}
-          />
-          <Contract
-            name="TalentDaoNftToken"
-            price={price}
-            signer={userSigner}
-            provider={localProvider}
-            address={address}
-            blockExplorer={blockExplorer}
-            contractConfig={contractConfig}
-          />
-          <Contract
-            name="TalentDaoManager"
-            price={price}
-            signer={userSigner}
-            provider={localProvider}
-            address={address}
-            blockExplorer={blockExplorer}
-            contractConfig={contractConfig}
-          />
+          <Suspense fallback={<div>Loading...</div>}>
+            <Contract
+              name="TalentDaoToken"
+              price={price}
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+            />
+          </Suspense>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Contract
+              name="TalentDaoNftToken"
+              price={price}
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+            />
+          </Suspense>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Contract
+              name="TalentDaoManager"
+              price={price}
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+            />
+          </Suspense>
         </Route>
         <Route exact path="/submit/:walletId">
-          <Submit address={address} tx={tx} writeContracts={writeContracts} readContracts={readContracts} />
+          <Suspense fallback={<div>Loading...</div>}>
+            <SubmitView address={address} tx={tx} writeContracts={writeContracts} readContracts={readContracts} />
+          </Suspense>
         </Route>
         <Route exact path="/termsofservice">
-          <TermsOfService />
+          <Suspense fallback={<div>Loading...</div>}>
+            <TermsOfServiceView />
+          </Suspense>
         </Route>
         <Route exact path="/privacypolicy">
-          <PrivacyPolicy />
+          <Suspense fallback={<div>Loading...</div>}>
+            <PrivacyPolicyView />
+          </Suspense>
         </Route>
         <Route path="/subgraph">
-          <Subgraph
-            subgraphUri={props.subgraphUri}
-            tx={tx}
-            writeContracts={writeContracts}
-            mainnetProvider={mainnetProvider}
-          />
+          <Suspense fallback={<div>Loading...</div>}>
+            <SubgraphView
+              subgraphUri={props.subgraphUri}
+              tx={tx}
+              writeContracts={writeContracts}
+              mainnetProvider={mainnetProvider}
+            />
+          </Suspense>
+        </Route>
+        <Route path="/token">
+          <Suspense fallback={<div>Loading...</div>}>
+            <TokenView />
+          </Suspense>
+        </Route>
+        <Route path="/governance">
+          <Suspense fallback={<div>Loading...</div>}>
+            <Governance />
+          </Suspense>
+        </Route>
+        <Route path="/request-feature">
+          <Suspense fallback={<div>Loading...</div>}>
+            <div>Request Feature</div>
+          </Suspense>
         </Route>
       </Switch>
 
-      {/* <ThemeSwitch /> */}
-
-      {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
-      {/* <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
-        <div style={{ display: "flex", flex: 1, alignItems: "center" }}>
-          {USE_NETWORK_SELECTOR && (
-            <div style={{ marginRight: 20 }}>
-              <NetworkSwitch
-                networkOptions={networkOptions}
-                selectedNetwork={selectedNetwork}
-                setSelectedNetwork={setSelectedNetwork}
-              />
-            </div>
-          )}
-          <Account
-            useBurner={USE_BURNER_WALLET}
-            address={address}
-            localProvider={localProvider}
-            userSigner={userSigner}
-            mainnetProvider={mainnetProvider}
-            price={price}
-            web3Modal={web3Modal}
-            loadWeb3Modal={loadWeb3Modal}
-            logoutOfWeb3Modal={logoutOfWeb3Modal}
-            blockExplorer={blockExplorer}
-          />
-        </div>
-        {yourLocalBalance.lte(ethers.BigNumber.from("0")) && (
-          <FaucetHint localProvider={localProvider} targetNetwork={targetNetwork} address={address} />
-        )}
-      </div> */}
-
-      {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
-      {/* <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
-        <Row align="middle" gutter={[4, 4]}>
-          <Col span={8}>
-            <Ramp price={price} address={address} networks={NETWORKS} />
-          </Col>
-
-          <Col span={8} style={{ textAlign: "center", opacity: 0.8 }}>
-            <GasGauge gasPrice={gasPrice} />
-          </Col>
-          <Col span={8} style={{ textAlign: "center", opacity: 1 }}>
-            <Button
-              onClick={() => {
-                window.open("https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA");
-              }}
-              size="large"
-              shape="round"
-            >
-              <span style={{ marginRight: 8 }} role="img" aria-label="support">
-                💬
-              </span>
-              Support
-            </Button>
-          </Col>
-        </Row>
-
-       
-      </div> */}
       <Row align="middle" gutter={[4, 4]}>
         <Col span={24}>
           {
             // if the local provider has a signer, let's show the faucet:
-            faucetAvailable ? <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider} /> : ""
+            true ? (
+              <Suspense fallback={<div>Loading...</div>}>
+                <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider} />
+              </Suspense>
+            ) : (
+              ""
+            )
           }
         </Col>
       </Row>

@@ -16,7 +16,7 @@ function Footer() {
     <footer className="mx-4 sm:mx-0 mt-16">
       <div className="rounded-2xl bg-none lg:bg-white px-0 lg:px-32 py-10 flex flex-col space-y-10">
         <div className="flex flex-col lg:flex-row justify-between space-x-0 lg:space-x-4 space-y-4 lg:space-y-0">
-          <img src={logo} width={270} height={65}></img>
+          <img src={logo} alt="logo" width={270} height={65}></img>
           <div className="flex flex-col lg:flex-row items-start lg:items-center space-y-4 lg:space-y-0">
             <div className="relative">
               <button
@@ -82,15 +82,25 @@ function Footer() {
             </div>
             <div className="flex flex-col space-y-4">
               <div className="text-2xl font-bold border-b pb-4">COMMUNITY</div>
-              <div className="text-lg font-semibold cursor-pointer">TOKEN</div>
-              <div className="text-lg font-semibold cursor-pointer">GOVERNANCE</div>
-              <div className="text-lg font-semibold cursor-pointer">SUGGEST FEATURE</div>
+              <div className="text-lg font-semibold cursor-pointer" onClick={() => history.push("/token")}>
+                TOKEN
+              </div>
+              <div className="text-lg font-semibold cursor-pointer" onClick={() => history.push("/governance")}>
+                GOVERNANCE
+              </div>
+              <div className="text-lg font-semibold cursor-pointer" onClick={() => history.push("/suggest-feature")}>
+                SUGGEST FEATURE
+              </div>
             </div>
           </div>
           <div className="flex lg:hidden flex-col space-y-4">
             <div className="flex flex-row justify-between items-center" onClick={() => setTalentShow(!talentShow)}>
               <div className="text-xl font-bold">TALENTDAO</div>
-              {talentShow === false ? <img className="w-4" src={plus}></img> : <img className="w-4" src={minus}></img>}
+              {talentShow === false ? (
+                <img className="w-4" src={plus} alt="plus sign"></img>
+              ) : (
+                <img className="w-4" src={minus} alt="munus sign"></img>
+              )}
             </div>
             {talentShow && (
               <>
@@ -112,9 +122,9 @@ function Footer() {
             >
               <div className="text-xl font-bold">COMMUNITY</div>
               {communityShow === false ? (
-                <img className="w-4" src={plus}></img>
+                <img className="w-4" src={plus} alt="plus sign"></img>
               ) : (
-                <img className="w-4" src={minus}></img>
+                <img className="w-4" src={minus} alt="minus sign"></img>
               )}
             </div>
             {communityShow && (

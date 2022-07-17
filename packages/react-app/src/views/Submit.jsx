@@ -25,8 +25,6 @@ const Submit = ({ address, tx, writeContracts, readContracts }) => {
   const [authorError, setAuthorError] = useState(false);
   const [abstractError, setAbstractError] = useState(false);
 
-  // todo: Arweave
-
   const changeSelectedManuscriptFile = event => {
     setSelectedManuscriptFile(event.target.files[0]);
   };

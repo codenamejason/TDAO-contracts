@@ -11,7 +11,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 /// @title Talent DAO NFT Contract
 /// @author Jaxcoder
 /// @dev ERC721 to represent articles submitted by authors as the IP and license
-contract MembershipNftToken is Ownable, ERC721URIStorage {
+contract TalentDaoNftToken is Ownable, ERC721URIStorage {
     using Counters for Counters.Counter;
     using SafeERC20 for IERC20;
 
@@ -21,7 +21,7 @@ contract MembershipNftToken is Ownable, ERC721URIStorage {
     address public tDaoTokenAddress;
     IERC20 private tDaoToken;
 
-    constructor(address _owner, address _tDaoToken) public ERC721("Talent DAO MEMBER NFT", "TDAO-MEMBER") {
+    constructor(address _owner, address _tDaoToken) public ERC721("Talent DAO Article NFT", "TDAO-ARTICLE") {
         tDaoToken = IERC20(_tDaoToken);
         tDaoTokenAddress = _tDaoToken;
         _transferOwnership(_owner);
@@ -36,7 +36,7 @@ contract MembershipNftToken is Ownable, ERC721URIStorage {
     /// @param authorAddress the user that is minting the token address
     /// @param metadataPtr the metadata uri for the nft
     /// @param amount the amount of tdao tokens submitting
-    function mintMembershipToken(address authorAddress, string memory metadataPtr, uint256 amount)
+    function mintArticleToken(address authorAddress, string memory metadataPtr, uint256 amount)
         public
         returns (uint256)
     {

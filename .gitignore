@@ -15,8 +15,8 @@ packages/hardhat/cache*
 packages/**/data
 !packages/react-app/src/contracts/contracts.js
 
-packages/react-app/src/RBDknevaThx7OS6TSULo00kYTADbA0gL12PamuBuLM4.js
-packages/react-app/src/utils/RBDknevaThx7OS6TSULo00kYTADbA0gL12PamuBuLM4.js
+packages/react-app/wallet.json
+#packages/react-app/src/utils/wallet.js
 
 # ts
 packages/hardhat-ts/cache

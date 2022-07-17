@@ -6,6 +6,7 @@ module.exports = {
       transparent: "transparent",
       primary: "#B41C2E",
       white: "#ffffff",
+      grey: "#E6E6E6",
       lightgray: "#A7A7A7",
       gray: "#e4e4e4",
       darkgray: "#424242",
@@ -15,6 +16,9 @@ module.exports = {
       red: "#ff0101",
       black: "#000",
     },
+    fontFamily: {
+      'mont': ["Montserrat", "ui-sans-serif", "system-ui"],
+    }
   },
   plugins: [
     // require("@tailwindcss/forms"),

@@ -50,12 +50,12 @@ contract TalentDaoManager is Ownable, AuthorEntity, AccessControl, TokenRecover 
     event ManagerRemoved(address indexed oldManager);
     event ManagerAdded(address indexed newManager);
    
-    constructor(address _manager, address _owner, address _TDAOToken, address _TDAONFTToken, address _TDAOMemberToken) public {
+    constructor(address _manager, address _owner, address _TDAOToken, address _TDAONFTToken) public {
         manager = _manager;
         _setupRole(MANAGER_ROLE, _manager);
         tDaoToken = ITDAOToken(_TDAOToken);
         articleNft = IArticleNft(_TDAONFTToken);
-        tDaoMemberToken = ITDAOMemberToken(_TDAOMemberToken);
+        // tDaoMemberToken = ITDAOMemberToken(_TDAOMemberToken);
         transferOwnership(_owner);
     }
 
