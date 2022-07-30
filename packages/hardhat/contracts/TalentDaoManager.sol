@@ -50,7 +50,7 @@ contract TalentDaoManager is Ownable, AuthorEntity, AccessControl, TokenRecover 
     event ManagerRemoved(address indexed oldManager);
     event ManagerAdded(address indexed newManager);
    
-    constructor(address _manager, address _owner, address _TDAOToken, address _TDAONFTToken) public {
+    constructor(address _manager, address _owner, address _TDAOToken, address _TDAONFTToken) {
         manager = _manager;
         _setupRole(MANAGER_ROLE, _manager);
         tDaoToken = ITDAOToken(_TDAOToken);
@@ -102,7 +102,7 @@ contract TalentDaoManager is Ownable, AuthorEntity, AccessControl, TokenRecover 
         if(!success) revert FailedTransfer();
     }
 
-    function tipAuthorEth(address author) public payable {
+    function tipAuthorEth() public payable {
         (bool success, ) = msg.sender.call{ value: msg.value }("");
         if(!success) revert FailedTransfer();
     }

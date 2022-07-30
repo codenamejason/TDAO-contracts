@@ -21,7 +21,7 @@ const InputWithButton = () => {
         <span></span>
       </button>
     </div>
-  );
+  )
 };
 
 export default InputWithButton;

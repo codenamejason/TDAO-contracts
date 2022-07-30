@@ -1,11 +1,10 @@
-pragma solidity ^0.8.4; // todo: need to deploy 0.8.4
+pragma solidity ^0.8.15;
 pragma experimental ABIEncoderV2;
 //SPDX-License-Identifier: MIT
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 //import "../utility/ReentrancyGuard.sol";
@@ -36,7 +35,6 @@ contract TokenRecover is Ownable {
 /// @dev There is a 1:1 ratio on swaps
 // ReentrancyGuard, 
 contract TalentStaking is AccessControl, TokenRecover {
-    using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
     address private asset;
@@ -121,7 +119,6 @@ contract TalentStaking is AccessControl, TokenRecover {
         address _talentToken,
         address _veTalentToken
     )
-        public
     {
         startBlock = _startBlock;
         bonusEndBlock = _bonusEndBlock;
@@ -160,7 +157,7 @@ contract TalentStaking is AccessControl, TokenRecover {
     {
         require(_allocationPoint > 0 && _allocationPoint < 101, "Outside the bounds of the system");
         uint256 lastRewardBlock = block.number > startBlock ? block.number : startBlock;
-        totalAllocationPoint = totalAllocationPoint.add(_allocationPoint);
+        totalAllocationPoint = totalAllocationPoint + _allocationPoint;
 
         PoolInfo storage pool = pools[numOfPools++];
         pool.asset = _asset;
@@ -177,9 +174,7 @@ contract TalentStaking is AccessControl, TokenRecover {
         onlyOwner 
     {
         PoolInfo storage pool = pools[_poolId];
-        totalAllocationPoint = totalAllocationPoint.sub(pools[_poolId].allocationPoint).add(
-            _allocPoint
-        );
+        totalAllocationPoint = totalAllocationPoint - pools[_poolId].allocationPoint + _allocPoint;
         pool.allocationPoint = _allocPoint;
     }
 
@@ -190,14 +185,11 @@ contract TalentStaking is AccessControl, TokenRecover {
         returns (uint256)
     {
         if (_to <= bonusEndBlock) {
-            return _to.sub(_from).mul(BONUS_MULTIPLIER);
+            return _to - _from * BONUS_MULTIPLIER;
         } else if (_from >= bonusEndBlock) {
-            return _to.sub(_from);
+            return _to - _from;
         } else {
-            return
-                bonusEndBlock.sub(_from).mul(BONUS_MULTIPLIER).add(
-                    _to.sub(bonusEndBlock)
-                );
+            return (bonusEndBlock - _from) * BONUS_MULTIPLIER + (_to - bonusEndBlock);
         }
     }
 
@@ -217,18 +209,15 @@ contract TalentStaking is AccessControl, TokenRecover {
                 pool.lastRewardBlock,
                 block.number
             );
-            uint256 talentReward = multiplier
-                .mul(TALENT_PER_BLOCK)
-                .mul(pool.allocationPoint)
-                .div(totalAllocationPoint);
+            uint256 talentReward = (multiplier * (TALENT_PER_BLOCK * pool.allocationPoint)) / totalAllocationPoint;
             console.log("Pending Talent for user", talentReward);
-            accTalentPerShare = accTalentPerShare.add(
-                talentReward.mul(1e12).div(lpSupply)
+            accTalentPerShare = accTalentPerShare + (
+                (talentReward * 1e12) / lpSupply
             );
             console.log("Acc TALENT per share ", accTalentPerShare);
         }
 
-        return staker.amount.mul(accTalentPerShare).div(1e12).sub(staker.rewardDebt);
+        return ((staker.amount * accTalentPerShare) / 1e12) - staker.rewardDebt;
     }
 
     /// @dev updates the pool rewards values
@@ -243,14 +232,9 @@ contract TalentStaking is AccessControl, TokenRecover {
             return;
         }
         uint256 multiplier = getMultiplier(pool.lastRewardBlock, block.number);
-        uint256 talentReward = multiplier
-            .mul(TALENT_PER_BLOCK)
-            .mul(pool.allocationPoint)
-            .div(totalAllocationPoint);
+        uint256 talentReward = (multiplier * (TALENT_PER_BLOCK * pool.allocationPoint)) / totalAllocationPoint;
         talentToken.mintTokensTo(address(this), talentReward);
-        pool.accTalentPerShare = pool.accTalentPerShare.add(
-            talentReward.mul(1e12).div(lpSupply)
-        );
+        pool.accTalentPerShare = pool.accTalentPerShare + ((talentReward * 1e12) / lpSupply);
         pool.lastRewardBlock = block.number;
     }
 
@@ -261,11 +245,7 @@ contract TalentStaking is AccessControl, TokenRecover {
 
         updatePool(_poolId);
         if (user.amount > 0) {
-            uint256 pending = user
-                .amount
-                .mul(pool.accTalentPerShare)
-                .div(1e12)
-                .sub(user.rewardDebt);
+            uint256 pending = (user.amount * pool.accTalentPerShare) / 1e12 - user.rewardDebt;
             safeTalentTransfer(msg.sender, pending);
             console.log("Transferred ", pending, " PRHO rewards");
         }
@@ -275,13 +255,13 @@ contract TalentStaking is AccessControl, TokenRecover {
             address(this),
             _amount
         );
-        pool.depositSum = pool.depositSum.add(_amount);
+        pool.depositSum = pool.depositSum + _amount;
         console.log("Transferred ", _amount, " Talent");
         // veTalentToken.mintStakerTokens(msg.sender, _amount);
         safeVeTalentTransfer(msg.sender, _amount);
         console.log("Transferred ", _amount, " veTalent");
-        user.amount = user.amount.add(_amount);
-        user.rewardDebt = user.amount.mul(pool.accTalentPerShare).div(1e12);
+        user.amount = user.amount + _amount;
+        user.rewardDebt = (user.amount + pool.accTalentPerShare) / 1e12;
         
         emit Deposited(msg.sender, _amount, block.timestamp);
     }
@@ -293,11 +273,9 @@ contract TalentStaking is AccessControl, TokenRecover {
         StakerInfo storage user = stakerInfo[_poolId][msg.sender];
         require(user.amount >= _amount, "withdraw: not good");
         updatePool(_poolId);
-        uint256 pending = user.amount.mul(pool.accTalentPerShare).div(1e12).sub(
-            user.rewardDebt
-        );
+        uint256 pending = ((user.amount * pool.accTalentPerShare) / 1e12) - user.rewardDebt;
         // take our 10% of the rewards
-        pending = (pending.div(100)).mul(90);
+        pending = (pending / (100)) * (90);
         // send rewards to user
         safeTalentTransfer(msg.sender, pending);
         // burn _amount of veTalent
@@ -305,9 +283,9 @@ contract TalentStaking is AccessControl, TokenRecover {
         // send the _amount back to user
         safeTalentTransfer(msg.sender, _amount);
         // update struct
-        user.amount = user.amount.sub(_amount);
-        user.rewardDebt = user.amount.mul(pool.accTalentPerShare).div(1e12);
-        pool.depositSum = pool.depositSum.sub(_amount);
+        user.amount = user.amount - (_amount);
+        user.rewardDebt = (user.amount * pool.accTalentPerShare) / 1e12;
+        pool.depositSum = pool.depositSum - _amount;
 
         // emit the event
         emit Withdraw(msg.sender, _poolId, _amount);
@@ -379,7 +357,7 @@ contract TalentStaking is AccessControl, TokenRecover {
         StakerInfo storage staker = stakerInfo[_poolId][msg.sender];
 
         uint256 amount = staker.amount;
-        pool.depositSum = pool.depositSum.sub(amount);
+        pool.depositSum = pool.depositSum - (amount);
         staker.amount = 0;
         staker.rewardDebt = 0;
         veTalentToken.burnFrom(msg.sender, amount);

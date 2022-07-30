@@ -21,14 +21,14 @@ contract TalentDaoNftToken is Ownable, ERC721URIStorage {
     address public tDaoTokenAddress;
     IERC20 private tDaoToken;
 
-    constructor(address _owner, address _tDaoToken) public ERC721("Talent DAO Article NFT", "TDAO-ARTICLE") {
+    constructor(address _owner, address _tDaoToken) ERC721("Talent DAO Article NFT", "TDAO-ARTICLE") {
         tDaoToken = IERC20(_tDaoToken);
         tDaoTokenAddress = _tDaoToken;
         _transferOwnership(_owner);
     }
 
     /// @dev we may not need this, for OpenSea
-    function contractURI() public view returns (string memory) {
+    function contractURI() public pure returns (string memory) {
         return "";
     }
 

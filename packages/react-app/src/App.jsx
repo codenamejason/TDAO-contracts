@@ -285,7 +285,7 @@ function App(props) {
             />
           </Suspense>
         </Route>
-        <Route exact path={["/user", "/user/submissions", "/user/author", "/user/articles", "/user/notifications", "/user/published", "/user/reviewed_papers"]}>
+        <Route exact path={["/user", "/user/submissions", "/user/author", "/user/articles", "/user/notifications", "/user/publisher"]}>
           <Suspense fallback={<div>Loading...</div>}>
             <UserView address={address} userMenuOpen={userMenuOpen} handleUserMenuOpen={handleUserMenuOpen} />
           </Suspense>

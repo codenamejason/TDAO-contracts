@@ -1,13 +1,19 @@
-import { useEffect, useState } from "react";
-import { SimilarArticleCard } from "./SimilarArticleCard";
+import { lazy, Suspense, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
+import illustrationImage from "../../assets/illustration.png";
+
+const ArticleCard = lazy(() => import("./ArticleCard.jsx"));
 
 const UserArticles = ({ address }) => {
-  const [toArticles, goToArticles] = useState(false);
+  const [articles, setArticles] = useState([]);
   const [articleNfts, setArticleNfts] = useState([]);
+
+  const history = useHistory();
 
   useEffect(() => {
     const getArticles = () => {
       // the user articles will be IP NFT's
+      console.log("Articles loading...", articles);
     };
 
     getArticles();
@@ -15,22 +21,25 @@ const UserArticles = ({ address }) => {
 
   return (
     <div className="my-8">
-      {!toArticles ? (
-        <div className="flex justify-center">
-          <div className="rounded-2xl p-8 bg-white flex flex-col text-left space-y-4">
-            <div
-              className="rounded-xl text-lg bg-primary text-white text-center cursor-pointer px-4 py-2"
-              onClick={() => goToArticles(true)}
-            >
-              Mint Your First Article
-            </div>
+      {articles.length === 0 ? (
+        <div className="flex flex-col justify-center py-52">
+          <img className="self-center w-1/5 mb-6" src={illustrationImage} alt="illustration" />
+          <div className="text-center text-xl font-bold mb-1">Nothing to see here</div>
+          <div className="text-center text-base mb-6">Upload your next article, document on Talent DAO</div>
+          <div
+            className="w-1/5 self-center rounded-full text-lg bg-primary text-white text-center cursor-pointer px-4 py-4"
+            onClick={() => history.push(`/submit/${address}`)}
+          >
+            Submit an Article
           </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {articleNfts.map((item, index) => {
-            return <SimilarArticleCard article={item}></SimilarArticleCard>;
-          })}
+          <Suspense fallback={<div>Loading Articles...</div>}>
+            {articles.map((item, index) => {
+              return <ArticleCard article={item}></ArticleCard>;
+            })}
+          </Suspense>
         </div>
       )}
     </div>

@@ -7,7 +7,7 @@ contract ReputationController is ReputationBase {
     
 
 
-    constructor () public {
+    constructor () {
 
     }
 
