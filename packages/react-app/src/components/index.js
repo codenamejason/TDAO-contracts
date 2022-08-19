@@ -13,4 +13,4 @@ export { default as NetworkDisplay } from "./NetworkDisplay";
 export { default as NetworkSwitch } from "./NetworkSwitch";
 export { default as ThemeSwitch } from "./ThemeSwitch";
 export { default as TokenBalance } from "./TokenBalance";
-export { default as Wallet } from "./Wallet";
+export { default as Wallet } from "./WalletOld";

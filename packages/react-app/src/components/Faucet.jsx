@@ -3,7 +3,7 @@ import { Button, Input, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
 import Blockies from "react-blockies";
 import { Transactor } from "../helpers";
-import Wallet from "./Wallet";
+import Wallet from "./WalletOld";
 
 const { utils } = require("ethers");
 
