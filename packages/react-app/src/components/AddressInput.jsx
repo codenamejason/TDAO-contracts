@@ -2,11 +2,9 @@ import { CameraOutlined, QrcodeOutlined } from "@ant-design/icons";
 import { Badge, Input } from "antd";
 import { useLookupAddress } from "eth-hooks/dapps/ens";
 import { ethers } from "ethers";
-import React, { lazy, Suspense, useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 import QrReader from "react-qr-reader";
-// import Blockie from "./Blockie";
-
-const Blockie = lazy(() => import("./Blockie"));
+import { Blockie } from "../components";
 
 // probably we need to change value={toAddress} to address={toAddress}
 
@@ -113,11 +111,7 @@ export default function AddressInput(props) {
         autoComplete="off"
         autoFocus={props.autoFocus}
         placeholder={props.placeholder ? props.placeholder : "address"}
-        prefix={
-          <Suspense fallback={<div>Loading...</div>}>
-            <Blockie address={currentValue} size={8} scale={3} />
-          </Suspense>
-        }
+        prefix={<Blockie address={currentValue} size={8} scale={3} />}
         value={ethers.utils.isAddress(currentValue) && !isENS(currentValue) && isENS(ens) ? ens : currentValue}
         addonAfter={
           <div

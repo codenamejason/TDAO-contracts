@@ -2,22 +2,19 @@
 import { notification } from "antd";
 import axios from "axios";
 import { ethers } from "ethers";
-import React, { lazy, useEffect, useState } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import mark from "../assets/best_mark.png";
 import check from "../assets/check.png";
 import linkedin from "../assets/linkedin.png";
 import twitter from "../assets/twitter.png";
-// import { ArticleMintCard, AuthorMark, Footer } from "../components/HelperComponents";
+import { ArticleMintCard, AuthorMark, Footer } from "../components/HelperComponents";
 import { dataURLtoFile, getAuthorData } from "../utils/utils";
 
-// lazy load
-const ArticleMintCard = lazy(() => import("../components/HelperComponents/ArticleMintCard"));
-const AuthorMark = lazy(() => import("../components/HelperComponents/AuthorMark"));
-const Footer = lazy(() => import("../components/HelperComponents/Footer"));
+const server = "https://tdao-api.herokuapp.com";
 
 const Author = ({ tx, readContracts, writeContracts, address }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { walletId } = useParams();
   const [author, setAuthor] = useState(null);
   const [articles, setArticles] = useState([]);
@@ -45,7 +42,6 @@ const Author = ({ tx, readContracts, writeContracts, address }) => {
 
   const getArticles = async () => {
     try {
-      const server = "https://tdao-api.herokuapp.com";
       const params = new URLSearchParams([["walletId", walletId]]);
       const articleResponse = await axios.get(server + "/api/articles", { params });
       if (articleResponse.data.success) {
@@ -109,7 +105,6 @@ const Author = ({ tx, readContracts, writeContracts, address }) => {
   }, [author]);
 
   useEffect(async () => {
-    const server = "https://tdao-api.herokuapp.com";
     try {
       const res = await axios.put(server + "/api/author_readers", {
         walletId: walletId,
@@ -128,7 +123,6 @@ const Author = ({ tx, readContracts, writeContracts, address }) => {
   const putTimesCited = async () => {
     const times = timesCited + 1;
     try {
-      const server = "https://tdao-api.herokuapp.com";
       const res = await axios.put(server + "/api/author_times", {
         walletId: walletId,
         timesCited: times,

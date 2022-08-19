@@ -1,18 +1,16 @@
 import axios from "axios";
-import { lazy, Suspense, useEffect, useState } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import illustrationImage from "../../assets/illustration.png";
+import { SubmissionCard } from "../HelperComponents";
 
 const server = "https://talentdao-api.herokuapp.com";
-
-const SubmissionCard = lazy(() => import("./SubmissionCard.jsx"));
 
 const UserSubmissions = ({ address }) => {
   // const [toArticles, goToArticles] = useState(false);
   const [articles, setArticles] = useState([]);
 
-  const history = useHistory();
-  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getArticles = async () => {
@@ -33,14 +31,14 @@ const UserSubmissions = ({ address }) => {
 
   return (
     <div className="flex flex-col bg-white p-8">
-      {articles.length === 0 ? (
+      {articles.length !== 0 ? (
         <div className="flex flex-col mb-6 place-content-between mt-4">
           <div className="flex flex-row mb-6 place-content-between">
             <div className="ml-1 -mt-1 font-bold cursor-pointer text-xl">Submissions</div>
             <div className="flex flex-row space-x-4">
               <div
                 className="ml-1 -mt-0.5 cursor-pointer text-lg text-primary"
-                onClick={() => history.push(`/user/publisher`)}
+                onClick={() => navigate(`/user/publisher`)}
               >
                 See Reviewers & Publishers
               </div>
@@ -56,15 +54,9 @@ const UserSubmissions = ({ address }) => {
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            <Suspense fallback={<div>Loading Submission Card...</div>}>
-              {articles.map((item, index) => {
-                return (
-                  <Suspense fallback={<div>Loading Submitted Article...</div>}>
-                    <SubmissionCard key={index} article={item}></SubmissionCard>
-                  </Suspense>
-                );
-              })}
-            </Suspense>
+            {articles.map((item, index) => {
+              return <SubmissionCard key={index} article={item}></SubmissionCard>;
+            })}
           </div>
         </div>
       ) : (
@@ -74,7 +66,7 @@ const UserSubmissions = ({ address }) => {
           <div className="text-center text-base mb-6">Upload your next article, document on Talent DAO</div>
           <div
             className="w-1/5 self-center rounded-full text-lg bg-primary text-white text-center cursor-pointer px-4 py-4"
-            onClick={() => history.push(`/submit/${address}`)}
+            onClick={() => navigate(`/submit/${address}`)}
           >
             Make A Submission
           </div>

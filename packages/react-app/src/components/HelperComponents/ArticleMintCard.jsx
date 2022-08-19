@@ -1,12 +1,12 @@
 import { notification } from "antd";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { dataURLtoFile } from "../../utils/utils";
 
 const ArticleMintCard = ({ article, tx, writeContracts, readContracts, address }) => {
   const [coverImage, setCoverImage] = useState(null);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (article === undefined || article === null) return;
@@ -51,7 +51,7 @@ const ArticleMintCard = ({ article, tx, writeContracts, readContracts, address }
       <div className="grid grid-cols-2 space-x-4">
         <div
           className="bg-primary text-white px-4 py-2 rounded-xl cursor-pointer"
-          onClick={() => history.push(`/article/${article._id}`)}
+          onClick={() => navigate(`/article/${article._id}`)}
         >
           VIEW
         </div>

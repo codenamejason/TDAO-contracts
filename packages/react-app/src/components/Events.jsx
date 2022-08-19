@@ -1,9 +1,6 @@
 import { List } from "antd";
 import { useEventListener } from "eth-hooks/events/useEventListener";
-// import { Address } from "../components";
-import { lazy, Suspense } from "react";
-
-const Address = lazy(() => import("../components/Address"));
+import { Address } from "../components";
 
 /*
   ~ What it does? ~
@@ -35,9 +32,7 @@ export default function Events({ contracts, contractName, eventName, localProvid
         renderItem={item => {
           return (
             <List.Item key={item.blockNumber + "_" + item.args.sender + "_" + item.args.purpose}>
-              <Suspense fallback={<div>Loading...</div>}>
-                <Address address={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
-              </Suspense>
+              <Address address={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
               {item.args[1]}
             </List.Item>
           );

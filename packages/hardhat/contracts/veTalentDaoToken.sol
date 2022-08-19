@@ -99,7 +99,6 @@ contract veTalentToken is ERC20, Ownable, AccessControl, ERC20Burnable {
     (
         address _owner
     )
-        public
         ERC20("veTalent Reputation Token", "veTALENT")
         ERC20Burnable()
     {
@@ -165,19 +164,19 @@ contract veTalentToken is ERC20, Ownable, AccessControl, ERC20Burnable {
     /// @notice Mint token function
     /// @dev Mints to the sender
     /// @param _amount The amount to mint
-    function mintTokens
-    (
-        uint256 _amount
-    )
-        external
+    // function mintTokens
+    // (
+    //     uint256 _amount
+    // )
+    //     external
 
-    {
-        if (msg.sender == address(0)) revert ZeroAddress();
-        _balances[msg.sender] += uint96(_amount);
+    // {
+    //     if (msg.sender == address(0)) revert ZeroAddress();
+    //     _balances[msg.sender] += uint96(_amount);
 
-        _mint(msg.sender, _amount);
-        _moveDelegates(address(0), _delegates[msg.sender], _amount);
-    }
+    //     _mint(msg.sender, _amount);
+    //     _moveDelegates(address(0), _delegates[msg.sender], _amount);
+    // }
 
     /// @notice Mint token function to address
     /// @dev This mints to a specified address

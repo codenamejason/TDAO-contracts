@@ -26,8 +26,7 @@ contract rTalentNftToken is Ownable, ERC1155 {
 
     /// @dev this is internal mint function
     /// @param ownerAddress the user that is minting the token address
-    /// @param tokenURI the uri for the token metadata
-    function mintNFT(address ownerAddress, string memory tokenURI, bytes memory data)
+    function mintReputationToken(address ownerAddress, bytes memory data)
         public
         returns (uint256)
     {
@@ -38,7 +37,7 @@ contract rTalentNftToken is Ownable, ERC1155 {
         _mint(ownerAddress, newItemId, 1, data);
 
         // return the tokenId and the authorId it was minted to
-        // the authorId will be 
+        // the authorId will be
         return (newItemId);
     }
 }

@@ -1,14 +1,13 @@
-import { lazy, Suspense, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import illustrationImage from "../../assets/illustration.png";
-
-const ArticleCard = lazy(() => import("./ArticleCard.jsx"));
+import { ArticleCard } from "./ArticleCard";
 
 const UserArticles = ({ address }) => {
   const [articles, setArticles] = useState([]);
   const [articleNfts, setArticleNfts] = useState([]);
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getArticles = () => {
@@ -28,18 +27,16 @@ const UserArticles = ({ address }) => {
           <div className="text-center text-base mb-6">Upload your next article, document on Talent DAO</div>
           <div
             className="w-1/5 self-center rounded-full text-lg bg-primary text-white text-center cursor-pointer px-4 py-4"
-            onClick={() => history.push(`/submit/${address}`)}
+            onClick={() => navigate(`/submit/${address}`)}
           >
             Submit an Article
           </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          <Suspense fallback={<div>Loading Articles...</div>}>
-            {articles.map((item, index) => {
-              return <ArticleCard article={item}></ArticleCard>;
-            })}
-          </Suspense>
+          {articles.map((item, index) => {
+            return <ArticleCard article={item}></ArticleCard>;
+          })}
         </div>
       )}
     </div>

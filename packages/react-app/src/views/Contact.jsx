@@ -4,7 +4,7 @@ import contact_join_us from "../assets/contact_join_us.png";
 import contact_rect from "../assets/contact_rect.png";
 import faqArrow from "../assets/faqArrow.png";
 import lineImage from "../assets/line.png";
-import Footer from "../components/HelperComponents/Footer";
+import { Footer } from "../components/HelperComponents";
 
 const FAQStateType = {
   none: "",

@@ -1,12 +1,10 @@
 import { Switch } from "antd";
-import { lazy, Suspense, useState } from "react";
-import { useHistory } from "react-router-dom";
-
-const PublisherCard = lazy(() => import("./PublisherCard.jsx"));
-const ReviewerCard = lazy(() => import("./ReviewerCard.jsx"));
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { PublisherCard, ReviewerCard } from "../HelperComponents";
 
 const PublisherPage = ({ address }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [selectedOption, setSelectedOption] = useState();
   const [checked, setChecked] = useState(false);
 
@@ -26,7 +24,7 @@ const PublisherPage = ({ address }) => {
               fill="black"
             />
           </svg>
-          <div className="ml-2 -mt-1 font-bold cursor-pointer" onClick={() => history.push(`/user/submissions`)}>
+          <div className="ml-2 -mt-1 font-bold cursor-pointer" onClick={() => navigate(`/user/submissions`)}>
             Back
           </div>
         </div>
@@ -57,19 +55,19 @@ const PublisherPage = ({ address }) => {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {!checked ? (
-          <Suspense fallback={<div>Loading Publishers...</div>}>
+          <>
             <PublisherCard></PublisherCard>
             <PublisherCard></PublisherCard>
             <PublisherCard></PublisherCard>
             <PublisherCard></PublisherCard>
             <PublisherCard></PublisherCard>
-          </Suspense>
+          </>
         ) : (
-          <Suspense fallback={<div>Loading Reviewers...</div>}>
+          <>
             <ReviewerCard></ReviewerCard>
             <ReviewerCard></ReviewerCard>
             <ReviewerCard></ReviewerCard>
-          </Suspense>
+          </>
         )}
       </div>
     </div>

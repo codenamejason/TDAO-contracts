@@ -4,27 +4,27 @@ const { solidity } = require("ethereum-waffle");
 
 use(solidity);
 
-describe("My Dapp", function () {
-  let myContract;
+describe("TalentDAO Journal of Decentralized Work", function () {
+  let contract;
 
   // quick fix to let gas reporter fetch data from gas station & coinmarketcap
   before((done) => {
     setTimeout(done, 2000);
   });
 
-  describe("YourContract", function () {
-    it("Should deploy YourContract", async function () {
-      const YourContract = await ethers.getContractFactory("YourContract");
-
-      myContract = await YourContract.deploy();
+  describe("ReputationController", function () {
+    it("Should deploy ReputationController", async function () {
+      const Contract = await ethers.getContractFactory("ReputationController");
+      reputationController = await Contract.deploy();
     });
 
-    describe("setPurpose()", function () {
-      it("Should be able to set a new purpose", async function () {
-        const newPurpose = "Test Purpose";
+    describe("createNewUser()", function () {
+      it("Should create a new user", async function () {
+        const [user] = await ethers.getSigners();
 
-        await myContract.setPurpose(newPurpose);
-        expect(await myContract.purpose()).to.equal(newPurpose);
+        expect(reputationController.createNewUser(user.address)).to.
+          emit(reputationController, "NewUser").
+            withArgs(user.address);
       });
 
       // Uncomment the event and emit lines in YourContract.sol to make this test pass

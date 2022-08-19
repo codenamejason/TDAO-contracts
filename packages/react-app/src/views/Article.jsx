@@ -1,7 +1,6 @@
 import { notification, Tooltip } from "antd";
 import axios from "axios";
 import { ethers } from "ethers";
-import { APIClient } from "openlaw";
 import React, { useEffect, useState } from "react";
 // import FileViewer from "react-file-viewer";
 import { pdfjs } from "react-pdf";
@@ -12,21 +11,21 @@ import article_back from "../assets/article_back.png";
 import author_pro from "../assets/author_pro.png";
 import ethereum from "../assets/ethereum.png";
 import matic from "../assets/matic.png";
-import { SimilarArticleCard } from "../components/HelperComponents/SimilarArticleCard";
+import { SimilarArticleCard } from "../components/HelperComponents";
 import { dataURLtoFile, getAuthorData, readTextFile } from "../utils/utils";
 pdfjs.GlobalWorkerOptions.workerSrc = "pdf.worker.min.js";
 
 const server = "https://tdao-api.herokuapp.com/";
-const apiClient = new APIClient(
-  "https://lib.openlaw.io/api/v1/default",
-  // {
-  //   root: "https://openlaw-instance-with-basic-auth.openlaw.io/api/v1/default",
-  //   auth: {
-  //     username: "jason@pharo.tech", //process.env.OL_USERNAME,
-  //     password: "JaxCodes@1", //process.env.OL_PASSWORD,
-  //   },
-  // },
-);
+// const apiClient = new APIClient(
+// "https://lib.openlaw.io/api/v1/default",
+// {
+//   root: "https://openlaw-instance-with-basic-auth.openlaw.io/api/v1/default",
+//   auth: {
+//     username: "jason@pharo.tech", //process.env.OL_USERNAME,
+//     password: "JaxCodes@1", //process.env.OL_PASSWORD,
+//   },
+// },
+// );
 // apiClient.login("jason@pharo.tech", "JaxCodes@1");
 
 const tabType = {
@@ -139,7 +138,7 @@ const Article = ({ readContracts, writeContracts, address, tx }) => {
     scrollTop();
   }, []);
 
-  const example = apiClient.getTemplateById("Test Agreement").then(r => setTemplate(r));
+  // const example = apiClient.getTemplateById("Test Agreement").then(r => setTemplate(r));
 
   return (
     <div>

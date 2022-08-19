@@ -30,14 +30,14 @@ const UserConnect = () => {
               onClick={() => setToTypeWallet(true)}
             >
               <div className="text-lg">Connect via Metamask</div>
-              <img className="pl-2" src={metamask}></img>
+              <img className="pl-2" src={metamask} alt="metamask"></img>
             </div>
             <div
               className="rounded-xl bg-primary text-white text-center cursor-pointer py-4 flex flex-row items-center justify-center"
               onClick={() => setToTypeWallet(true)}
             >
               <div className="text-lg">Connect via WalletConnect</div>
-              <img className="pl-2" src={wallet_connect}></img>
+              <img className="pl-2" src={wallet_connect} alt="wallet-connect"></img>
             </div>
           </>
         )}

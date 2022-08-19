@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import userImage from "../../assets/author_pro.png";
 import profileImage from "../../assets/contact_join_us.png";
 
 const PublisherCard = ({ article }) => {
   const [src, setSrc] = useState();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   // useEffect(() => {
   //   if (!article) return;
@@ -59,7 +59,7 @@ const PublisherCard = ({ article }) => {
           background: "#FFEEEE",
           color: "#B41C2E",
         }}
-        onClick={() => history.push(`/article/${article.article?._id}`)}
+        onClick={() => navigate(`/article/${article.article?._id}`)}
       >
         View Profile
       </div>

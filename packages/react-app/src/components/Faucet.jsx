@@ -3,12 +3,9 @@ import { Button, Input, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
 import Blockies from "react-blockies";
 import { Transactor } from "../helpers";
-// import Wallet from "./Wallet";
-import { lazy, Suspense } from "react";
+import Wallet from "./Wallet";
 
 const { utils } = require("ethers");
-
-const Wallet = lazy(() => import("./Wallet"));
 
 // improved a bit by converting address to ens if it exists
 // added option to directly input ens name
@@ -90,15 +87,13 @@ export default function Faucet(props) {
               shape="circle"
               icon={<SendOutlined />}
             />
-            <Suspense fallback={<div>Loading...</div>}>
-              <Wallet
-                color="#888888"
-                provider={localProvider}
-                ensProvider={ensProvider}
-                price={price}
-                address={faucetAddress}
-              />
-            </Suspense>
+            <Wallet
+              color="#888888"
+              provider={localProvider}
+              ensProvider={ensProvider}
+              price={price}
+              address={faucetAddress}
+            />
           </Tooltip>
         }
       />

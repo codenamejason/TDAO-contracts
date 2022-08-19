@@ -1,10 +1,10 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import article_back from "../../assets/article_back.png";
 import author_pro from "../../assets/author_pro.png";
 
-export const SimilarArticleCard = ({ address, article }) => {
-  const history = useHistory();
+const SimilarArticleCard = ({ address, article }) => {
+  const navigate = useNavigate();
 
   return (
     <div
@@ -15,7 +15,7 @@ export const SimilarArticleCard = ({ address, article }) => {
         <img
           alt="similar"
           className="rounded-full cursor-pointer"
-          onClick={() => history.push("/author")}
+          onClick={() => navigate("/author")}
           src={author_pro}
           width={50}
           height={50}
@@ -29,10 +29,12 @@ export const SimilarArticleCard = ({ address, article }) => {
       <div className="text-lg">Metaverse, NFT & DEFI, the New Wave</div>
       <div
         className="mx-8 rounded-xl border border-black py-2 text-xl font-bold cursor-pointer"
-        onClick={() => history.push("/article")}
+        onClick={() => navigate("/article")}
       >
         VIEW
       </div>
     </div>
   );
 };
+
+export default SimilarArticleCard;

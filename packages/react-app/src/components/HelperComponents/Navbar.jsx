@@ -1,5 +1,5 @@
-import { lazy, Suspense, useEffect, useState } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import discord from "../../assets/discord.png";
 import divideImage from "../../assets/divide.png";
 import menuImage from "../../assets/menu.png";
@@ -26,7 +26,7 @@ function Navbar({
   userMenuOpen,
   handleUserMenuOpen,
 }) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
 
   const [show, setShow] = useState(false);
@@ -38,7 +38,7 @@ function Navbar({
   const goToPage = locationPath => {
     setShow(false);
     setNavPanelOpen(false);
-    history.push(locationPath);
+    navigate(locationPath);
   };
 
   const handleMenuOpen = () => {
@@ -54,7 +54,7 @@ function Navbar({
     goToPage("/browse");
   };
 
-  useEffect(async () => {
+  useEffect(() => {
     if (address === undefined || address === "") return;
     const params = new URLSearchParams([["walletId", address]]);
     const data = getAuthorData(params);

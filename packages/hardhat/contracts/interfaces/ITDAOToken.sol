@@ -9,7 +9,6 @@ interface ITDAOToken {
     function setupDistributorRole(address distributor) external;
     function setupNewAdminRole(address _newAdmin, address _oldAdmin) external;
     function mintTokensTo(address _to, uint256 _amount) external;
-    function mintTokens(uint256 amount) external;
     function transfer (address recipient, uint256 amount ) external returns ( bool );
     function transferFrom (address sender, address recipient, uint256 amount ) external returns ( bool );
     function approve (address spender, uint256 amount ) external returns ( bool );

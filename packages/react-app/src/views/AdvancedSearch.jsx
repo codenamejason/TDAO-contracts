@@ -1,16 +1,11 @@
 import axios from "axios";
-import React, { lazy, Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import clear from "../assets/clear.svg";
 import search from "../assets/search.svg";
-// import { AuthorCard } from "../components/HelperComponents/AuthorCard";
-// import Footer from "../components/HelperComponents/Footer";
-// import { SubmissionCard } from "../components/HelperComponents/SubmissionCard";
+import { AuthorCard, Footer, SubmissionCard } from "../components/HelperComponents";
 import { strcmp } from "../utils/utils";
 
-// lazy load components
-const AuthorCard = lazy(() => import("../components/HelperComponents/AuthorCard"));
-const Footer = lazy(() => import("../components/HelperComponents/Footer"));
-const SubmissionCard = lazy(() => import("../components/HelperComponents/SubmissionCard"));
+const server = "https://tdao-api.herokuapp.com";
 
 const AdvancedSearch = () => {
   const [category, setCategory] = useState("author");
@@ -27,8 +22,23 @@ const AdvancedSearch = () => {
   // }, []);
 
   useEffect(() => {
+    const sortSearchResult = result => {
+      console.log("sortField == ", sortField);
+      if (result !== []) {
+        let isSorted = false;
+        result.sort((a, b) => {
+          const swapped = strcmp(b[sortField], a[sortField]);
+          if (swapped < 0) isSorted = true;
+          return swapped;
+        });
+        console.log("isSorted == ", isSorted);
+        if (isSorted) setSearchResult([...result]);
+        else setSearchResult(result);
+      }
+    };
+
     sortSearchResult(searchResult);
-  }, [sortField]);
+  }, [searchResult, sortField]);
 
   const sortSearchResult = result => {
     console.log("sortField == ", sortField);
@@ -46,7 +56,6 @@ const AdvancedSearch = () => {
   };
 
   const searchForQuery = async query => {
-    const server = "https://tdao-api.herokuapp.com";
     const cate = category === "author" ? "/api/author_find" : "/api/article_find";
     const params = new URLSearchParams([
       ["field", field],
@@ -202,22 +211,12 @@ const AdvancedSearch = () => {
         </div>
         <div className="py-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {category === "author"
-            ? searchResult.map(item => (
-                <Suspense fallback={<div>Loading...</div>}>
-                  <AuthorCard key={Math.random()} author={item}></AuthorCard>
-                </Suspense>
-              ))
-            : searchResult.map(item => (
-                <Suspense fallback={<div>Loading...</div>}>
-                  <SubmissionCard key={Math.random()} article={item}></SubmissionCard>
-                </Suspense>
-              ))}
+            ? searchResult.map(item => <AuthorCard key={Math.random()} author={item}></AuthorCard>)
+            : searchResult.map(item => <SubmissionCard key={Math.random()} article={item}></SubmissionCard>)}
         </div>
       </div>
       <div className="px-4 sm:px-8 md:px-10 xl:px-20">
-        <Suspense fallback={<div>Loading...</div>}>
-          <Footer></Footer>
-        </Suspense>
+        <Footer></Footer>
       </div>
     </div>
   );

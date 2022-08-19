@@ -1,14 +1,16 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import authorimg from "../../assets/author.png";
 import etherImage from "../../assets/ethereum.png";
 import heartImage from "../../assets/heart.png";
 import talentImage from "../../assets/talent.png";
 import { dataURLtoFile } from "../../utils/utils";
 
+const server = "https://talentdao-api.herokuapp.com";
+
 export const ArticleCard = ({ id }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [article, setArticle] = useState(null);
   const [author, setAuthor] = useState(null);
   const [coverImage, setCoverImage] = useState(null);
@@ -16,7 +18,6 @@ export const ArticleCard = ({ id }) => {
 
   useEffect(() => {
     const getArticle = async () => {
-      const server = "https://talentdao-api.herokuapp.com";
       try {
         const params = new URLSearchParams([["_id", id]]);
         const articleResponse = await axios.get(server + "/api/articles", { params });
@@ -32,7 +33,6 @@ export const ArticleCard = ({ id }) => {
 
   useEffect(() => {
     const getAuthorData = async () => {
-      const server = "https://talentdao-api.herokuapp.com";
       const params = new URLSearchParams([["walletId", article.walletId]]);
       try {
         const res = await axios.get(server + "/api/authors", { params });
@@ -70,13 +70,13 @@ export const ArticleCard = ({ id }) => {
               className="rounded-xl cursor-pointer w-full h-32 bg-cover bg-center"
               src={coverImage}
               alt=""
-              onClick={() => history.push("/article")}
+              onClick={() => navigate("/article")}
             />
           )}
         </a>
         <div className="pt-4 flex flex-col">
           <div className="h-10 flex flex-row justify-between items-start">
-            <div className="text-xl text-left font-bold cursor-pointer" onClick={() => history.push("/article")}>
+            <div className="text-xl text-left font-bold cursor-pointer" onClick={() => navigate("/article")}>
               {article && article.title}
             </div>
             <div className="flex flex-row items-center">
@@ -85,7 +85,7 @@ export const ArticleCard = ({ id }) => {
             </div>
           </div>
           <div className="pt-8 flex flex-row justify-between items-center">
-            <div className="flex flex-row items-center cursor-pointer" onClick={() => history.push("/author")}>
+            <div className="flex flex-row items-center cursor-pointer" onClick={() => navigate("/author")}>
               {authorImage ? (
                 <img alt="author" src={authorImage} width={30} height={30}></img>
               ) : (

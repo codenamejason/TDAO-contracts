@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { loadAppContracts } from "../helpers/loadAppContracts";
 
-export const useContractConfig = () => {
+const useContractConfig = () => {
   const [contractsConfig, setContractsConfig] = useState({});
 
   useEffect(() => {
@@ -13,3 +13,5 @@ export const useContractConfig = () => {
   }, []);
   return contractsConfig;
 };
+
+export default useContractConfig;

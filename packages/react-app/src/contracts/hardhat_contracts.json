@@ -2024,7 +2024,7 @@
                   "type": "string"
                 }
               ],
-              "stateMutability": "view",
+              "stateMutability": "pure",
               "type": "function"
             },
             {
@@ -3158,13 +3158,7 @@
               "type": "function"
             },
             {
-              "inputs": [
-                {
-                  "internalType": "address",
-                  "name": "author",
-                  "type": "address"
-                }
-              ],
+              "inputs": [],
               "name": "tipAuthorEth",
               "outputs": [],
               "stateMutability": "payable",

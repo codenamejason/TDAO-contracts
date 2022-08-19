@@ -15,6 +15,7 @@ export { default as Notifications } from "./Notifications";
 export { default as PublisherCard } from "./PublisherCard";
 export { default as PublisherPage } from "./PublisherPage";
 export { default as ReviewerCard } from "./ReviewerCard";
+export { default as SimilarArticleCard } from "./SimilarArticleCard";
 export { default as Splash } from "./Splash";
 export { default as SubmissionCard } from "./SubmissionCard";
 export { default as SubmitFile } from "./SubmitFile";

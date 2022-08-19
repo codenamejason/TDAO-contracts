@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
 import { ethers } from "ethers";
+import { useCallback, useEffect, useState } from "react";
 
 const createProvider = async url => {
   const p = new ethers.providers.StaticJsonRpcProvider(url);
@@ -9,7 +9,7 @@ const createProvider = async url => {
   return p;
 };
 
-export default function useStaticJsonRPC(urlArray) {
+const useStaticJsonRPC = urlArray => {
   const [provider, setProvider] = useState(null);
 
   const handleProviders = useCallback(async () => {
@@ -30,4 +30,6 @@ export default function useStaticJsonRPC(urlArray) {
   }, [JSON.stringify(urlArray)]);
 
   return provider;
-}
+};
+
+export default useStaticJsonRPC;

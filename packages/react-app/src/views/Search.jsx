@@ -1,19 +1,14 @@
 import axios from "axios";
-import React, { lazy, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { createSearchParams, useNavigate } from "react-router-dom";
 import arrow from "../assets/arrowWhite.svg";
 import clear from "../assets/clear.svg";
 import info from "../assets/info.svg";
 import search from "../assets/search.svg";
-// import { AuthorCard } from "../components/HelperComponents/AuthorCard";
-// import Footer from "../components/HelperComponents/Footer";
-// import { SubmissionCard } from "../components/HelperComponents/SubmissionCard";
+import { AuthorCard, Footer, SubmissionCard } from "../components/HelperComponents";
 import { strcmp } from "../utils/utils";
 
-// lazy load components
-const AuthorCard = lazy(() => import("../components/HelperComponents/AuthorCard"));
-const Footer = lazy(() => import("../components/HelperComponents/Footer"));
-const SubmissionCard = lazy(() => import("../components/HelperComponents/SubmissionCard"));
+const server = "https://tdao-api.herokuapp.com";
 
 const Search = () => {
   const [category, setCategory] = useState("author");
@@ -21,10 +16,16 @@ const Search = () => {
   const [sortField, setSortField] = useState("username");
   const [value, setValue] = useState("");
   const [searchResult, setSearchResult] = useState([]);
-  const history = useHistory();
+  const navigate = useNavigate();
 
+  // todo: FIXME to work with navigate
   useEffect(() => {
-    const query = history.location.search.split("=")[1];
+    const query = navigate({
+      pathname: "",
+      search: createSearchParams({
+        equals: "=",
+      }).toString(),
+    });
     setValue(query);
     searchForQuery(query);
   }, []);
@@ -49,14 +50,13 @@ const Search = () => {
   };
 
   const searchForQuery = async query => {
-    const server = "https://tdao-api.herokuapp.com/";
-    const cate = category === "author" ? "/api/author_find" : "/api/article_find";
+    const cat = category === "author" ? "/api/author_find" : "/api/article_find";
     const params = new URLSearchParams([
       ["field", field],
       ["value", query],
     ]);
     try {
-      const res = await axios.get(server + cate, { params });
+      const res = await axios.get(server + cat, { params });
       console.log(res);
       if (res.data.success) {
         sortSearchResult(res.data.data);
@@ -162,7 +162,7 @@ const Search = () => {
               </div>
               <div
                 className="w-full md:w-auto flex flex-col space-y-2 cursor-pointer"
-                onClick={() => history.push("/advancedsearch")}
+                onClick={() => navigate("/advancedsearch")}
               >
                 <div className="text-sm hidden md:flex flex-row items-center">
                   <div>Narrow search</div>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import discord from "../../assets/discord.png";
 import minus from "../../assets/minus.png";
 import plus from "../../assets/plus.png";
@@ -10,7 +10,7 @@ function Footer() {
   const [show, setShow] = useState(false);
   const [talentShow, setTalentShow] = useState(false);
   const [communityShow, setCommunityShow] = useState(false);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   return (
     <footer className="mx-4 sm:mx-0 mt-16">
@@ -69,12 +69,12 @@ function Footer() {
           <div className="hidden lg:flex flex-row space-x-16">
             <div className="flex flex-col space-y-4">
               <div className="text-2xl font-bold border-b pb-4">TALENTDAO</div>
-              <div className="text-lg font-semibold cursor-pointer" onClick={() => history.push("/about")}>
+              <div className="text-lg font-semibold cursor-pointer" onClick={() => navigate("/about")}>
                 ABOUT
               </div>
               <div
                 className="text-lg font-semibold cursor-pointer whitespace-nowrap"
-                onClick={() => history.push("/contact")}
+                onClick={() => navigate("/contact")}
               >
                 CONTACT US
               </div>
@@ -82,13 +82,13 @@ function Footer() {
             </div>
             <div className="flex flex-col space-y-4">
               <div className="text-2xl font-bold border-b pb-4">COMMUNITY</div>
-              <div className="text-lg font-semibold cursor-pointer" onClick={() => history.push("/token")}>
+              <div className="text-lg font-semibold cursor-pointer" onClick={() => navigate("/token")}>
                 TOKEN
               </div>
-              <div className="text-lg font-semibold cursor-pointer" onClick={() => history.push("/governance")}>
+              <div className="text-lg font-semibold cursor-pointer" onClick={() => navigate("/governance")}>
                 GOVERNANCE
               </div>
-              <div className="text-lg font-semibold cursor-pointer" onClick={() => history.push("/suggest-feature")}>
+              <div className="text-lg font-semibold cursor-pointer" onClick={() => navigate("/suggest-feature")}>
                 SUGGEST FEATURE
               </div>
             </div>
@@ -104,12 +104,12 @@ function Footer() {
             </div>
             {talentShow && (
               <>
-                <div className="text-lg font-semibold cursor-pointer" onClick={() => history.push("/about")}>
+                <div className="text-lg font-semibold cursor-pointer" onClick={() => navigate("/about")}>
                   ABOUT
                 </div>
                 <div
                   className="text-lg font-semibold cursor-pointer whitespace-nowrap"
-                  onClick={() => history.push("/contact")}
+                  onClick={() => navigate("/contact")}
                 >
                   CONTACT US
                 </div>
@@ -129,12 +129,12 @@ function Footer() {
             </div>
             {communityShow && (
               <>
-                <div className="text-lg font-semibold cursor-pointer" onClick={() => history.push("/about")}>
+                <div className="text-lg font-semibold cursor-pointer" onClick={() => navigate("/about")}>
                   ABOUT
                 </div>
                 <div
                   className="text-lg font-semibold cursor-pointer whitespace-nowrap"
-                  onClick={() => history.push("/contact")}
+                  onClick={() => navigate("/contact")}
                 >
                   CONTACT US
                 </div>
@@ -148,7 +148,7 @@ function Footer() {
             <div className="flex flex-col lg:flex-row items-center lg:space-x-4 space-y-4 lg:space-y-0 text-center">
               <div
                 className="w-full rounded-full bg-primary text-white text-xl px-4 py-2 cursor-pointer whitespace-nowrap"
-                onClick={() => history.push("/contact")}
+                onClick={() => navigate("/contact")}
               >
                 CONTACT US
               </div>
@@ -162,10 +162,10 @@ function Footer() {
       <div className="flex flex-col lg:flex-row justify-between px-0 lg:px-32 text-left space-y-2 lg:py-10">
         <div className="text-lg text-primary">© TALENTDAO ALL RIGHTS RESERVED</div>
         <div className="flex flex-row items-center space-x-4">
-          <div className="text-lg text-primary cursor-pointer" onClick={() => history.push("/termsofservice")}>
+          <div className="text-lg text-primary cursor-pointer" onClick={() => navigate("/termsofservice")}>
             TERMS
           </div>
-          <div className="text-lg text-primary cursor-pointer" onClick={() => history.push("/privacypolicy")}>
+          <div className="text-lg text-primary cursor-pointer" onClick={() => navigate("/privacypolicy")}>
             PRIVACY POLICY
           </div>
         </div>

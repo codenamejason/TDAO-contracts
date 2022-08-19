@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useFieldArray } from "react-hook-form";
 
-export const AuthorForm = ({ register, control, handleSubmit, reset, formState, watch }) => {
+const AuthorForm = ({ register, control, handleSubmit, reset, formState, watch }) => {
   // functions to build form returned by useForm() and useFieldArray() hooks
   const { errors } = formState;
   const { fields, append, remove } = useFieldArray({ name: "tickets", control });
@@ -24,7 +24,7 @@ export const AuthorForm = ({ register, control, handleSubmit, reset, formState, 
         remove(i - 1);
       }
     }
-  }, [numberOfAuthors]);
+  }, [append, fields.length, numberOfAuthors, remove]);
 
   return (
     <>
@@ -88,3 +88,5 @@ export const AuthorForm = ({ register, control, handleSubmit, reset, formState, 
     </>
   );
 };
+
+export default AuthorForm;

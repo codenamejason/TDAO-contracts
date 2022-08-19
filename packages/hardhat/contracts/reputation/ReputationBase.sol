@@ -15,7 +15,8 @@ abstract contract ReputationBase is Ownable {
     using SafeERC20 for IERC20;
 
     // state variables
-    Counters.Counter public userIds;
+    Counters.Counter public numUsers;
+    mapping (uint => User) public users;
 
 
     // custom errors
@@ -25,19 +26,19 @@ abstract contract ReputationBase is Ownable {
 
     // structs
     struct User {
-        uint128 id;
-        uint128 totalScore;
-        address walletId;
+        uint256 id;
+        uint256 totalScore;
+        address userAddress;
         Reputation[] reputations;
     }
 
     struct Reputation {
-        uint128 id;
-        uint128 score;
+        uint256 id;
+        uint256 score;
     }
 
     struct Metadata {
-        uint128 id;
+        uint256 id;
         // not sure how to use this yet...
     }
 
@@ -50,4 +51,13 @@ abstract contract ReputationBase is Ownable {
 
 
     // logic/functions
+    function createNewUser(address userAddress) public {
+        Counters.increment(numUsers);
+        User storage user = users[Counters.current(numUsers)];
+        user.id = Counters.current(numUsers);
+        user.totalScore = 0;
+        user.userAddress = userAddress;
+        // TODO: Need to set reputations here?
+        emit NewUser(user.userAddress);
+    }
 }

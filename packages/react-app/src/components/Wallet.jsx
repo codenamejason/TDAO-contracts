@@ -1,20 +1,16 @@
 import { KeyOutlined, QrcodeOutlined, SendOutlined, WalletOutlined } from "@ant-design/icons";
 import { Button, Modal, Spin, Tooltip, Typography } from "antd";
 import { ethers } from "ethers";
+import { useAccount, useSigner } from "wagmi";
 import QR from "qrcode.react";
-import React, { lazy, Suspense, useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { Transactor } from "../helpers";
-// import Address from "./Address";
-// import AddressInput from "./AddressInput";
-// import Balance from "./Balance";
-// import EtherInput from "./EtherInput";
+import Address from "./Address";
+import AddressInput from "./AddressInput";
+import Balance from "./Balance";
+import EtherInput from "./EtherInput";
 
 const { Text, Paragraph } = Typography;
-
-const Address = lazy(() => import("./Address"));
-const AddressInput = lazy(() => import("./AddressInput"));
-const Balance = lazy(() => import("./Balance"));
-const EtherInput = lazy(() => import("./EtherInput"));
 
 /*
   ~ What it does? ~
@@ -46,6 +42,9 @@ const EtherInput = lazy(() => import("./EtherInput"));
 
 export default function Wallet(props) {
   const [signerAddress, setSignerAddress] = useState();
+  const { address } = useAccount();
+  const { data: signer } = useSigner();
+  console.log({ address, signer });
   useEffect(() => {
     async function getAddress() {
       if (props.signer) {
