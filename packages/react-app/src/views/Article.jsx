@@ -11,7 +11,7 @@ import article_back from "../assets/article_back.png";
 import author_pro from "../assets/author_pro.png";
 import ethereum from "../assets/ethereum.png";
 import matic from "../assets/matic.png";
-import { SimilarArticleCard } from "../components/HelperComponents";
+import { SimilarArticleCard } from "../components";
 import { dataURLtoFile, getAuthorData, readTextFile } from "../utils/utils";
 pdfjs.GlobalWorkerOptions.workerSrc = "pdf.worker.min.js";
 

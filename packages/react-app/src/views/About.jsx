@@ -6,7 +6,7 @@ import know from "../assets/know.png";
 import lineImage from "../assets/line.png";
 import people_at from "../assets/people_at.png";
 import tradition from "../assets/tradition.png";
-import { Footer } from "../components/HelperComponents";
+import { Footer } from "../components";
 
 const About = () => {
   const scrollTop = () => {

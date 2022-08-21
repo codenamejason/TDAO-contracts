@@ -1,12 +1,12 @@
 import axios from "axios";
-import React, { Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import arrowRightImage from "../assets/ArrowRight.png";
 import authorImage from "../assets/author.png";
 import lineImage from "../assets/line.png";
 import partnershipImage from "../assets/partnership.png";
 import profileImage from "../assets/profile.png";
-import { Footer, LatestArticles, Newsletter, Splash } from "../components/HelperComponents";
+import { Footer, LatestArticles, Newsletter, Splash } from "../components";
 import { dataURLtoFile, getBgColorForCategory, getTextColorForCategory } from "../utils/utils";
 
 const server = "https://tdao-api.herokuapp.com";
@@ -19,18 +19,19 @@ const server = "https://tdao-api.herokuapp.com";
  */
 function Home({ address }) {
   const [articles, setArticles] = useState(null);
-  const getLatestArticle = async () => {
-    try {
-      const articleResponse = await axios.get(`${server}/api/articles_latest`, {});
-      if (articleResponse.data.success) {
-        setArticles(articleResponse.data.data);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
 
   useEffect(() => {
+    const getLatestArticle = async () => {
+      try {
+        const articleResponse = await axios.get(`${server}/api/articles_latest`, {});
+        if (articleResponse.data.success) {
+          setArticles(articleResponse.data.data);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
     getLatestArticle();
   }, []);
 
@@ -72,15 +73,14 @@ function Home({ address }) {
         console.log(e);
       }
     };
+
     init();
   }, [address]);
 
   return (
     <div style={{ backgroundImage: "linear-gradient(#fff, #EEEE" }}>
       <div className="mx-auto pt-4 max-w-xl md:max-w-4xl xl:max-w-7xl overflow-hidden">
-        <Suspense fallback={<div>Loading...</div>}>
-          <Splash address={address} />
-        </Suspense>
+        <Splash address={address} />
         <div className="mx-4 flex flex-row items-center pt-6">
           <img src={profileImage} alt="profile" className="pr-2"></img>
           <div className="text-black font-semibold text-2xl">

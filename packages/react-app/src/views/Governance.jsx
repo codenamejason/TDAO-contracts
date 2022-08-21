@@ -1,5 +1,5 @@
 import React from "react";
-import { Footer } from "../components/HelperComponents";
+import { Footer } from "../components";
 
 const Governance = () => {
   return (

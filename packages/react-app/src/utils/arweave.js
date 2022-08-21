@@ -9,6 +9,7 @@ const arweave = Arweave.init({
   protocol: "https",
 });
 
+//! this is only needed to seed a new wallet !!
 export async function getWalletAddress(arJWL) {
   const walletAddress = await arweave.wallets.jwkToAddress(arJWL);
 
@@ -35,7 +36,7 @@ export async function sendTransacton(data, contentType, categories) {
   // Examples
   transaction.addTag("Content-Type", `${contentType}`);
   transaction.addTag("Category", `${categories[0] && categories[0]}`);
-  transaction.addTag("Publisher", "TalentDAO");
+  transaction.addTag("Publisher", "JoDW");
   console.log(transaction);
 
   await arweave.transactions.sign(transaction, arJWK);
@@ -75,47 +76,3 @@ export async function DecodeTags(txId) {
     // User-Agent : ArweaveDeploy/1.1.0
   });
 }
-
-// id here is just one string tx id
-// export const GRAPH_GET_TX_BY_ID = id => {
-//   transactions(ids: [id]) {
-//       edges {
-//           node {
-//               id
-//           }
-//       }
-//   }
-// }
-
-// ids is an array here of strings
-// export const GRAPH_GET_TX_BY_IDS = ids => {
-//   transactions(ids: ids) {
-//       edges {
-//           node {
-//               id
-//           }
-//       }
-//   }
-// }
-
-/**
- * 
- * @dev tag example to use for search
- *  {{
-        name: "Content-Type",
-        values: ["text/html"]
-    }} tags 
- */
-// export const GRAPH_GET_TX_BY_TAG = tag => {
-//   query {
-//     transactions(
-//         tags: tags
-//     ) {
-//         edges {
-//             node {
-//                 id
-//             }
-//         }
-//     }
-//   }
-// }

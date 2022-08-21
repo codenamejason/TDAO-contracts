@@ -1,34 +1,26 @@
-import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import { ApolloProvider } from "@apollo/client";
+import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import "@rainbow-me/rainbowkit/dist/index.css";
 import React from "react";
-import { ThemeSwitcherProvider } from "react-css-theme-switcher";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router } from "react-router-dom";
+import { WagmiConfig } from "wagmi";
 import App from "./App";
 import { ErrorBoundary } from "./components";
 import "./index.css";
-
-const themes = {
-  dark: "./dark-theme.css",
-  light: "./light-theme.css",
-};
-
-const prevTheme = window.localStorage.getItem("theme");
-
-const subgraphUri = "https://arweave.net/graphql";
-
-const client = new ApolloClient({
-  uri: subgraphUri,
-  cache: new InMemoryCache(),
-});
+import { arweaveClient } from "./utils/graphqlClient";
+import client, { chains } from "./utils/wagmi";
 
 ReactDOM.render(
   <ErrorBoundary>
-    <ApolloProvider client={client}>
-      <ThemeSwitcherProvider themeMap={themes} defaultTheme={prevTheme || "light"}>
-        <Router>
-          <App subgraphUri={subgraphUri} />
-        </Router>
-      </ThemeSwitcherProvider>
+    <ApolloProvider client={arweaveClient}>
+      <WagmiConfig client={client}>
+        <RainbowKitProvider chains={chains}>
+          <Router>
+            <App />
+          </Router>
+        </RainbowKitProvider>
+      </WagmiConfig>
     </ApolloProvider>
   </ErrorBoundary>,
   document.getElementById("root"),

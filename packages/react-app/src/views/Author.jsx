@@ -1,14 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { notification } from "antd";
 import axios from "axios";
-import { ethers } from "ethers";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useContractWrite } from "wagmi";
 import mark from "../assets/best_mark.png";
 import check from "../assets/check.png";
 import linkedin from "../assets/linkedin.png";
 import twitter from "../assets/twitter.png";
-import { ArticleMintCard, AuthorMark, Footer } from "../components/HelperComponents";
+import { ArticleMintCard, AuthorMark, Footer } from "../components";
 import { dataURLtoFile, getAuthorData } from "../utils/utils";
 
 const server = "https://tdao-api.herokuapp.com";
@@ -137,61 +136,18 @@ const Author = ({ tx, readContracts, writeContracts, address }) => {
     if (!tipDropDown) return;
   }, [tipDropDown]);
 
-  const tipAuthor = async amount => {
-    await tx(
-      writeContracts &&
-        writeContracts.TalentDaoToken &&
-        writeContracts.TalentDaoToken.approve(
-          readContracts?.TalentDaoManager.address,
-          ethers.utils.parseEther(amount.toString()),
-        ),
-      async update => {
-        console.log("📡 Transaction Update:", update);
-        if (update.status === 1) {
-          notification.open({
-            message: "TALENT Approved",
-            description: "Your TALENT has been approved to tip the Author 😍",
-            icon: "🚀",
-          });
-        }
-      },
-    );
+  // Set up the contract values
 
-    await tx(
-      writeContracts &&
-        writeContracts.TalentDaoManager &&
-        writeContracts.TalentDaoManager.tipAuthor(address, ethers.utils.parseEther(amount.toString())),
-      async update => {
-        console.log("📡 Transaction Update:", update);
-        if (update.status === 1) {
-          notification.open({
-            message: "Author Tipped",
-            description: "Your have just tipped the Author 😍",
-            icon: "🚀",
-          });
-        }
-      },
-    );
-  };
+  // Contract interactions
+  const { write: tipAuthor, isLoading, isSuccess } = useContractWrite({
+    addressOrName: "",
+    contractInterface: [],
+    functionName: "",
+  });
 
-  const tipAuthorEth = async amount => {
-    console.log("amount", amount);
-    await tx(
-      writeContracts &&
-        writeContracts.TalentDaoManager &&
-        writeContracts.TalentDaoManager.tipAuthorEth(address, { value: ethers.utils.parseEther(amount.toString()) }),
-      async update => {
-        console.log("📡 Transaction Update:", update);
-        if (update.status === 1) {
-          notification.open({
-            message: "Author Tipped",
-            description: "Your have just tipped the Author 😍",
-            icon: "🚀",
-          });
-        }
-      },
-    );
-  };
+  const tipAuthorTalent = async amount => {};
+
+  const tipAuthorEth = async amount => {};
 
   return (
     <>
@@ -282,7 +238,7 @@ const Author = ({ tx, readContracts, writeContracts, address }) => {
                                   if (token == "ETH") {
                                     tipAuthorEth(tipAmount);
                                   } else {
-                                    tipAuthor(tipAmount);
+                                    tipAuthorTalent(tipAmount);
                                   }
                                   setTipDropDown(false);
                                 }}

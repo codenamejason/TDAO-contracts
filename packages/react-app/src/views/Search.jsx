@@ -5,7 +5,7 @@ import arrow from "../assets/arrowWhite.svg";
 import clear from "../assets/clear.svg";
 import info from "../assets/info.svg";
 import search from "../assets/search.svg";
-import { AuthorCard, Footer, SubmissionCard } from "../components/HelperComponents";
+import { AuthorCard, Footer, SubmissionCard } from "../components";
 import { strcmp } from "../utils/utils";
 
 const server = "https://tdao-api.herokuapp.com";

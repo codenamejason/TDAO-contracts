@@ -1,5 +1,4 @@
 export * from "./useContractConfig";
-export { default as useDebounce } from "./useDebounce";
 export { default as useGasPrice } from "./useGasPrice";
 export { default as useLocalStorage } from "./useLocalStorage";
 export { default as useStaticJsonRPC } from "./useStaticJsonRPC";
