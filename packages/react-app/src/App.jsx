@@ -4,7 +4,6 @@ import { Route, Routes } from "react-router-dom";
 import { useAccount } from "wagmi";
 import "./App.css";
 import { Navbar } from "./components";
-import { NETWORKS } from "./constants";
 import {
   AboutView,
   AdvancedSearchView,
