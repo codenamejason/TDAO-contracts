@@ -22,3 +22,17 @@ export const managerContract = async () => {
     contractInterface: (await contractList).default[80001][0].contracts.TalentDaoManager.abi,
   };
 };
+
+export const lensHubMumbaiContract = async () => {
+  return {
+    addressOrName: (await externalContracts).default[80001].contracts.LENS.address,
+    contractInterface: (await externalContracts).default[80001].contracts.LENS.abi,
+  };
+};
+
+export const lensHubPolygonContract = async () => {
+  return {
+    addressOrName: (await externalContracts).default[137].contracts.LENS.address,
+    contractInterface: (await externalContracts).default[137].contracts.LENS.abi,
+  };
+};
